@@ -1,1 +1,49 @@
 @import "tailwindcss";
+
+/* Base and global tweaks */
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased; }
+}
+
+/* Galaxy background with twinkling stars */
+/* Usage: place <GalaxyBackground /> once in your app (fixed, non-interactive) */
+.galaxy {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background: radial-gradient(1200px 800px at 20% 10%, rgba(59,130,246,0.08), transparent 60%),
+              radial-gradient(1000px 600px at 80% 30%, rgba(168,85,247,0.08), transparent 60%),
+              radial-gradient(900px 500px at 40% 80%, rgba(34,197,94,0.06), transparent 60%),
+              #070a14;
+}
+
+.galaxy::before,
+.galaxy::after {
+  content: "";
+  position: absolute;
+  inset: -10% -10% -10% -10%;
+  background: radial-gradient(800px 400px at 70% 70%, rgba(255,255,255,0.05), transparent 70%);
+  filter: blur(20px);
+}
+
+.star {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,0.5) 40%, rgba(255,255,255,0) 70%);
+  opacity: 0.8;
+  animation-name: twinkle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  box-shadow: 0 0 6px rgba(255,255,255,0.6);
+}
+
+.star--sm { width: 1px; height: 1px; }
+.star--md { width: 2px; height: 2px; }
+.star--lg { width: 3px; height: 3px; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.6); }
+}
