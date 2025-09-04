@@ -25,7 +25,7 @@
         </thead>
         <tbody>
           <tr v-for="(row, i) in paged" :key="row.id" class="border-t border-slate-200 dark:border-slate-800">
-            <td class="px-4 py-3">{{ (page - 1) * pageSize + i + 1 }}</td>
+            <td class="px-4 py-3">{{ skip + i + 1 }}</td>
             <td class="px-4 py-3">{{ format(row.createdAt) }}</td>
             <td class="px-4 py-3">{{ row.browser }}</td>
             <td class="px-4 py-3">{{ row.os }}</td>
@@ -40,12 +40,24 @@
       </table>
     </div>
 
-    <div class="mt-4 flex items-center justify-between">
-      <div class="text-sm text-slate-500">Total: {{ filtered.length }}</div>
-      <div class="flex items-center gap-2">
-        <button @click="prev" :disabled="page === 1" class="px-3 py-1 rounded border border-slate-300 dark:border-slate-700 disabled:opacity-50">Prev</button>
-        <span class="text-sm">Page {{ page }} / {{ totalPages }}</span>
-        <button @click="next" :disabled="page === totalPages" class="px-3 py-1 rounded border border-slate-300 dark:border-slate-700 disabled:opacity-50">Next</button>
+    <div class="mt-4 flex items-center justify-between gap-3 flex-wrap">
+      <div class="text-sm text-slate-500">Total: {{ total }}</div>
+      <div class="flex items-center gap-3">
+        <label class="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-2">
+          Tampilkan
+          <select v-model.number="pageSize" class="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            <option :value="10">10</option>
+            <option :value="25">25</option>
+            <option :value="50">50</option>
+            <option :value="100">100</option>
+          </select>
+          data per halaman
+        </label>
+        <div class="flex items-center gap-2">
+          <button @click="prev" :disabled="page === 1" class="px-3 py-1 rounded border border-slate-300 dark:border-slate-700 disabled:opacity-50">Prev</button>
+          <span class="text-sm">Page {{ page }} / {{ totalPages }}</span>
+          <button @click="next" :disabled="page === totalPages" class="px-3 py-1 rounded border border-slate-300 dark:border-slate-700 disabled:opacity-50">Next</button>
+        </div>
       </div>
     </div>
   </div>
@@ -62,14 +74,29 @@ type LogTrafic = {
   createdAt: string | Date
 }
 
-const { data, refresh, error } = await useAsyncData('log-trafic', () => $fetch<LogTrafic[]>('/api/log-trafic'))
+type LogTraficApi = {
+  items: LogTrafic[]
+  total: number
+  take: number
+  skip: number
+}
 
 const q = ref('')
 const page = ref(1)
-const pageSize = 20
+const pageSize = ref(10)
+
+const { data, refresh, error } = await useAsyncData(
+  () => `log-trafic-${page.value}-${pageSize.value}`,
+  () => $fetch<LogTraficApi>('/api/log-trafic', { params: { take: pageSize.value, skip: (page.value - 1) * pageSize.value } }),
+  { watch: [page, pageSize] }
+)
+
+const items = computed(() => data.value?.items || [])
+const total = computed(() => data.value?.total || 0)
+const skip = computed(() => data.value?.skip || 0)
 
 const filtered = computed(() => {
-  const list = data.value || []
+  const list = items.value || []
   if (!q.value) return list
   const s = q.value.toLowerCase()
   return list.filter(r =>
@@ -81,10 +108,11 @@ const filtered = computed(() => {
   )
 })
 
-const totalPages = computed(() => Math.max(1, Math.ceil(filtered.value.length / pageSize)))
-const paged = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize.value)))
+const paged = computed(() => filtered.value)
 
-watch([q, filtered], () => { page.value = 1 })
+watch(q, () => { page.value = 1 })
+watch(pageSize, () => { page.value = 1 })
 
 const prev = () => { if (page.value > 1) page.value-- }
 const next = () => { if (page.value < totalPages.value) page.value++ }
