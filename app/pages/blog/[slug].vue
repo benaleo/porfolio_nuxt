@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { showError } from '#app'
+import { useLogTrafic } from '~/composables/useLogTrafic'
 
 type Post = {
   id: number
@@ -36,4 +37,7 @@ if (error.value) {
 }
 
 const format = (s?: string | null) => (s ? new Date(s).toLocaleDateString() : '')
+
+// Log traffic on client mount
+useLogTrafic()
 </script>

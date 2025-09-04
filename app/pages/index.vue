@@ -37,9 +37,12 @@ import CountersSection from "~/components/sections/CountersSection.vue";
 import BlogSection from "~/components/sections/BlogSection.vue";
 import ContactSection from "~/components/sections/ContactSection.vue";
 import type { Profile } from "~/types/profile.types";
-
+import { useLogTrafic } from "~/composables/useLogTrafic";
 
 const { data: profile } = await useAsyncData("profile", () =>
   $fetch<Profile | null>("/api/profile")
 );
+
+// Log traffic on client mount
+useLogTrafic()
 </script>
