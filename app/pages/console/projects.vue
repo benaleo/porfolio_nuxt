@@ -2,10 +2,10 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold">Blog</h1>
-        <p class="text-sm text-slate-500">Create and manage your blog posts</p>
+        <h1 class="text-2xl font-semibold">Projects</h1>
+        <p class="text-sm text-slate-500">Create and manage your projects</p>
       </div>
-      <button @click="startCreate" class="rounded bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">New Post</button>
+      <button @click="startCreate" class="rounded bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">New Project</button>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[1fr_420px]">
@@ -15,20 +15,17 @@
           <thead>
             <tr class="text-left border-b border-slate-200/70 dark:border-slate-800">
               <th class="px-4 py-2">Title</th>
-              <th class="px-4 py-2">Slug</th>
-              <th class="px-4 py-2">Published</th>
+              <th class="px-4 py-2">Category</th>
+              <th class="px-4 py-2">Tags</th>
               <th class="px-4 py-2">Created</th>
               <th class="px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="p in paginatedPosts" :key="p.id" class="border-b border-slate-200/70 dark:border-slate-800">
+            <tr v-for="p in paginated" :key="p.id" class="border-b border-slate-200/70 dark:border-slate-800">
               <td class="px-4 py-2 font-medium">{{ p.title }}</td>
-              <td class="px-4 py-2 text-slate-500">{{ p.slug }}</td>
-              <td class="px-4 py-2">
-                <span v-if="p.publishedAt" class="text-green-600">{{ format(p.publishedAt) }}</span>
-                <span v-else class="text-yellow-600">Draft</span>
-              </td>
+              <td class="px-4 py-2 text-slate-500">{{ p.category }}</td>
+              <td class="px-4 py-2 text-slate-500">{{ (p.tags || []).join(', ') }}</td>
               <td class="px-4 py-2 text-slate-500">{{ format(p.createdAt) }}</td>
               <td class="px-4 py-2">
                 <div class="flex items-center gap-2">
@@ -37,8 +34,8 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="(posts || []).length === 0">
-              <td colspan="5" class="px-4 py-6 text-center text-slate-500">No posts yet</td>
+            <tr v-if="(projects || []).length === 0">
+              <td colspan="5" class="px-4 py-6 text-center text-slate-500">No projects yet</td>
             </tr>
           </tbody>
         </table>
@@ -59,32 +56,34 @@
 
       <!-- Editor -->
       <form v-if="editing" class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80 space-y-3" @submit.prevent="onSave">
-        <div class="text-sm font-medium">{{ form.id ? 'Edit Post' : 'New Post' }}</div>
+        <div class="text-sm font-medium">{{ form.id ? 'Edit Project' : 'New Project' }}</div>
         <div>
           <label class="block text-sm mb-1">Title</label>
           <input v-model="form.title" type="text" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" required />
         </div>
         <div>
-          <label class="block text-sm mb-1">Slug (optional)</label>
-          <input v-model="form.slug" type="text" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" />
-        </div>
-        <div>
-          <label class="block text-sm mb-1">Content</label>
-          <textarea v-model="form.content" rows="8" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" required></textarea>
+          <label class="block text-sm mb-1">Description</label>
+          <textarea v-model="form.description" rows="6" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" required></textarea>
         </div>
         <div class="grid sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm mb-1">Published Date</label>
-            <input v-model="form.publishedAt" type="date" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" />
+            <label class="block text-sm mb-1">Category</label>
+            <select v-model="form.category" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2">
+              <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+            </select>
           </div>
           <div>
-            <label class="block text-sm mb-1">Thumbnail</label>
+            <label class="block text-sm mb-1">Image</label>
             <div class="flex items-center gap-3">
-              <input type="file" accept="image/*" @change="onPickThumbnail" />
-              <button type="button" v-if="form.thumbnail" class="text-sm text-red-600" @click="() => (form.thumbnail = null)">Remove</button>
+              <input type="file" accept="image/*" @change="onPickImage" />
+              <button type="button" v-if="form.image" class="text-sm text-red-600" @click="() => (form.image = null)">Remove</button>
             </div>
-            <img v-if="form.thumbnail" :src="form.thumbnail" alt="thumb" class="mt-2 w-full rounded" />
+            <img v-if="form.image" :src="form.image" alt="image" class="mt-2 w-full rounded" />
           </div>
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Tags (comma separated)</label>
+          <input v-model="tagsInput" type="text" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none" placeholder="e.g. vue, nuxt, golang" />
         </div>
         <div class="flex items-center gap-2 pt-2">
           <button :disabled="saving" class="rounded bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 disabled:opacity-60">{{ saving ? 'Saving…' : 'Save' }}</button>
@@ -101,32 +100,32 @@ import admin from '../../../middleware/admin'
 
 definePageMeta({ layout: 'console', middleware: [admin] })
 
-type Post = {
+type Project = {
   id: number
   title: string
-  slug: string
-  content: string
-  thumbnail?: string | null
+  description: string
+  category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other'
+  image?: string | null
+  tags?: string[]
   createdAt: string
-  publishedAt?: string | null
 }
 
-const { data: posts, refresh } = await useAsyncData('blog-list', () => $fetch<Post[]>('/api/blog'))
+const categories = ['Backend', 'Frontend', 'Fullstack', 'Other'] as const
+
+const { data: projects, refresh } = await useAsyncData('project-list', () => $fetch<Project[]>('/api/projects'))
+
 const page = ref(1)
 const pageSize = ref(10)
 const totalPages = computed(() => {
-  const total = (posts.value || []).length
+  const total = (projects.value || []).length
   return Math.max(1, Math.ceil(total / pageSize.value))
 })
-const paginatedPosts = computed(() => {
-  const list = posts.value || []
+const paginated = computed(() => {
+  const list = projects.value || []
   const start = (page.value - 1) * pageSize.value
   return list.slice(start, start + pageSize.value)
 })
-watch([posts, pageSize], () => {
-  // reset page if list or page size changes
-  page.value = 1
-})
+watch([projects, pageSize], () => { page.value = 1 })
 const prevPage = () => { if (page.value > 1) page.value-- }
 const nextPage = () => { if (page.value < totalPages.value) page.value++ }
 
@@ -134,32 +133,26 @@ const editing = ref(false)
 const saving = ref(false)
 const error = ref('')
 
-const form = reactive<{ id?: number; title: string; slug?: string; content: string; publishedAt?: string | null; thumbnail?: string | null }>(
-  { title: '', slug: '', content: '', publishedAt: null, thumbnail: null },
+const form = reactive<{ id?: number; title: string; description: string; category: Project['category']; image?: string | null; tags?: string[] }>(
+  { title: '', description: '', category: 'Backend', image: null, tags: [] },
 )
+const tagsInput = ref('')
 
 const startCreate = () => {
   editing.value = true
-  Object.assign(form, { id: undefined, title: '', slug: '', content: '', publishedAt: null, thumbnail: null })
+  Object.assign(form, { id: undefined, title: '', description: '', category: 'Backend', image: null, tags: [] })
+  tagsInput.value = ''
 }
 
-const startEdit = (p: Post) => {
+const startEdit = (p: Project) => {
   editing.value = true
-  Object.assign(form, {
-    id: p.id,
-    title: p.title,
-    slug: p.slug,
-    content: p.content,
-    publishedAt: p.publishedAt ? p.publishedAt.slice(0, 10) : null,
-    thumbnail: p.thumbnail || null,
-  })
+  Object.assign(form, { id: p.id, title: p.title, description: p.description, category: p.category, image: p.image || null, tags: p.tags || [] })
+  tagsInput.value = (p.tags || []).join(', ')
 }
 
-const cancelEdit = () => {
-  editing.value = false
-}
+const cancelEdit = () => { editing.value = false }
 
-const onPickThumbnail = async (e: Event) => {
+const onPickImage = async (e: Event) => {
   const input = e.target as HTMLInputElement
   const file = input.files?.[0]
   if (!file) return
@@ -167,7 +160,7 @@ const onPickThumbnail = async (e: Event) => {
   fd.append('file', file)
   try {
     const res = await $fetch<{ url: string }>('/api/upload', { method: 'POST', body: fd })
-    form.thumbnail = res.url
+    form.image = res.url
   } catch (err: any) {
     error.value = err?.data?.message || 'Upload failed'
   }
@@ -177,10 +170,11 @@ const onSave = async () => {
   error.value = ''
   saving.value = true
   try {
+    form.tags = tagsInput.value.split(',').map(s => s.trim()).filter(Boolean)
     if (!form.id) {
-      await $fetch('/api/blog', { method: 'POST', credentials: 'include', body: form })
+      await $fetch('/api/projects', { method: 'POST', credentials: 'include', body: form })
     } else {
-      await $fetch(`/api/blog/${form.id}`, { method: 'PATCH', credentials: 'include', body: form })
+      await $fetch(`/api/projects/${form.id}`, { method: 'PATCH', credentials: 'include', body: form })
     }
     await refresh()
     editing.value = false
@@ -191,10 +185,10 @@ const onSave = async () => {
   }
 }
 
-const onDelete = async (p: Post) => {
+const onDelete = async (p: Project) => {
   if (!confirm(`Delete "${p.title}"?`)) return
   try {
-    await $fetch(`/api/blog/${p.id}`, { method: 'DELETE', credentials: 'include' })
+    await $fetch(`/api/projects/${p.id}`, { method: 'DELETE', credentials: 'include' })
     await refresh()
   } catch (e: any) {
     error.value = e?.data?.message || 'Failed to delete'

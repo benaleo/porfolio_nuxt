@@ -1,7 +1,7 @@
 <template>
-  <section class="py-20">
+  <section v-if="education.length > 0" class="py-20">
     <div class="mx-auto max-w-5xl px-4">
-      <h2 class="text-2xl sm:text-3xl font-bold">Education</h2>
+      <h2 class="text-2xl sm:text-3xl font-bold">Study</h2>
       <div class="mt-8 relative">
         <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800" />
         <div class="space-y-8">

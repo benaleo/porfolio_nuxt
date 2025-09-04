@@ -9,7 +9,7 @@
         <a href="#intro" class="font-semibold tracking-tight text-slate-800 dark:text-slate-100">Beno</a>
         <div class="hidden md:flex items-center gap-6 text-sm">
           <a href="#projects" class="hover:text-blue-600">Projects</a>
-          <a href="#education" class="hover:text-blue-600">Education</a>
+          <a href="#education" class="hover:text-blue-600">Study</a>
           <a href="#experience" class="hover:text-blue-600">Experience</a>
           <a href="#counters" class="hover:text-blue-600">Counters</a>
           <a href="#blog" class="hover:text-blue-600">Blog</a>
