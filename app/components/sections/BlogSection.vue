@@ -7,11 +7,11 @@
 
       <ClientOnly>
         <div
-          v-if="posts?.length"
+          v-if="postItems.length > 0"
           class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           <NuxtLink
-            v-for="b in posts"
+            v-for="b in postItems"
             :key="b.id"
             :to="`/blog/${b.slug}`"
             class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80 hover:shadow-lg transition"
@@ -44,9 +44,11 @@ type Post = {
   publishedAt?: string | null;
   createdAt: string;
 };
+type BlogResponse = { items: Post[]; total: number; take: number; skip: number };
 const { data: posts } = await useAsyncData("blog-list", () =>
-  $fetch<Post[]>("/api/blog")
+  $fetch<BlogResponse>("/api/blog")
 );
+const postItems = computed(() => posts.value?.items || []);
 const format = (s?: string | null) =>
   s ? new Date(s).toLocaleDateString() : "";
 const excerpt = (s: string) => (s.length > 120 ? s.slice(0, 120) + "…" : s);

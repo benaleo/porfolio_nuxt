@@ -40,12 +40,17 @@ type Project = {
 
 const selected = ref<'All' | string>('All')
 
-const { data: projects } = await useAsyncData('projects-list', () => $fetch<Project[]>('/api/projects'))
+type ProjectsResponse = { items: Project[]; total: number; take: number; skip: number }
+const { data: projects } = await useAsyncData('projects-list', () =>
+  $fetch<ProjectsResponse>('/api/projects')
+)
 
-const categories = computed(() => Array.from(new Set((projects.value || []).map((p) => p.category))))
+const categories = computed(() =>
+  Array.from(new Set((projects.value?.items || []).map((p) => p.category)))
+)
 
 const filtered = computed(() => {
-  const list = projects.value || []
+  const list = projects.value?.items || []
   return selected.value === 'All' ? list : list.filter((p) => p.category === selected.value)
 })
 </script>

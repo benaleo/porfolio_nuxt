@@ -21,7 +21,8 @@
 
 <script setup lang="ts">
 type DbEducation = { id: number; year: string; institution: string; major: string; summary?: string | null }
-const { data: eduRaw } = await useAsyncData('education-list', () => $fetch<DbEducation[]>('/api/education'))
+type EducationResponse = { items: DbEducation[]; total: number; take: number; skip: number }
+const { data: eduRaw } = await useAsyncData('education-list', () => $fetch<EducationResponse>('/api/education'))
 // Map DB fields to UI shape expected by the template
-const education = computed(() => (eduRaw.value || []).map((e) => ({ year: e.year, university: e.institution, major: e.major })))
+const education = computed(() => (eduRaw.value?.items || []).map((e) => ({ year: e.year, university: e.institution, major: e.major })))
 </script>

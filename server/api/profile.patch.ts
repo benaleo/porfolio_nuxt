@@ -23,6 +23,13 @@ export default defineEventHandler(async (event) => {
       update: data,
       create: { id: 1, name: body.name || 'Your Name', ...data },
     })
+    // Invalidate custom cache key used by GET handler
+    try {
+      const cache = useStorage('cache')
+      await cache.removeItem('app:profile:v1')
+    } catch (_) {
+      // ignore cache invalidation errors
+    }
     return updated
   } catch (e: any) {
     if (e?.code === 'P2021') throw createError({ statusCode: 503, message: 'Database is not initialized yet. Please run: bun run db:push' })

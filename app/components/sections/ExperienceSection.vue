@@ -27,10 +27,11 @@ type DbExperience = {
   summary?: string | null
 }
 
-const { data: expRaw } = await useAsyncData('experience-list', () => $fetch<DbExperience[]>('/api/experience'))
+type ExperienceResponse = { items: DbExperience[]; total: number; take: number; skip: number }
+const { data: expRaw } = await useAsyncData('experience-list', () => $fetch<ExperienceResponse>('/api/experience'))
 
 const experiences = computed(() =>
-  (expRaw.value || []).map((x) => ({
+  (expRaw.value?.items || []).map((x) => ({
     role: x.position,
     company: x.company,
     description: x.summary || '',
