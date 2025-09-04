@@ -1,11 +1,23 @@
 import { db } from '../../utils/prisma'
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   try {
-    const list = await db.experience.findMany({ orderBy: [{ startYear: 'desc' }, { createdAt: 'desc' }] })
-    return list
+    const query = getQuery(event)
+    const take = Math.min(parseInt(String(query.take || '100')), 500) || 100
+    const skip = parseInt(String(query.skip || '0')) || 0
+
+    const [items, total] = await Promise.all([
+      db.experience.findMany({
+        orderBy: [{ startYear: 'desc' }, { createdAt: 'desc' }],
+        take,
+        skip,
+      }),
+      db.experience.count(),
+    ])
+
+    return { items, total, take, skip }
   } catch (e: any) {
-    if (e?.code === 'P2021') return []
+    if (e?.code === 'P2021') return { items: [], total: 0, take: 0, skip: 0 }
     throw e
   }
 })
