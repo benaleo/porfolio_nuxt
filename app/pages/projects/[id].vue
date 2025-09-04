@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { showError } from '#app'
+import { useLogTrafic } from '~/composables/useLogTrafic'
 
 type Project = {
   id: number
@@ -37,4 +38,7 @@ if (error.value) {
   const statusCode = (error.value as any)?.statusCode || 404
   showError({ statusCode, statusMessage: 'Project not found' })
 }
+
+// Log traffic on client mount
+useLogTrafic()
 </script>
