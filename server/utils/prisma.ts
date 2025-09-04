@@ -1,11 +1,7 @@
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
+// Node client with singleton to survive HMR (compatible with es2019, no top-level await)
+import { PrismaClient } from '@prisma/client'
 
-// Use Edge client with Accelerate so it runs on Cloudflare Workers.
-// In Node/dev it also works, though without Node pooling.
-// PRISMA_ACCELERATE_URL must be set in production.
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL,
-})
-
-export const db = prisma.$extends(withAccelerate())
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const g = globalThis as any
+g.__prisma ??= new PrismaClient()
+export const db: PrismaClient = g.__prisma

@@ -82,3 +82,13 @@ model RequestContact {
   message   String
   createdAt DateTime @default(now())
 }
+
+model LogTrafic {
+  id        Int      @id @default(autoincrement())
+  browser   String
+  os        String
+  country   String?
+  ip        String?
+  url       String
+  createdAt DateTime @default(now())
+}
