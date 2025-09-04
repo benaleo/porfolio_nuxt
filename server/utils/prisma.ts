@@ -1,15 +1,11 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client/edge'
+import { withAccelerate } from '@prisma/extension-accelerate'
 
-// Ensure a single PrismaClient instance across HMR in dev
-let prisma: PrismaClient
+// Use Edge client with Accelerate so it runs on Cloudflare Workers.
+// In Node/dev it also works, though without Node pooling.
+// PRISMA_ACCELERATE_URL must be set in production.
+const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+})
 
-declare const globalThis: typeof global & { __prisma?: PrismaClient }
-
-if (!globalThis.__prisma) {
-  prisma = new PrismaClient()
-  globalThis.__prisma = prisma
-} else {
-  prisma = globalThis.__prisma
-}
-
-export const db = prisma
+export const db = prisma.$extends(withAccelerate())
