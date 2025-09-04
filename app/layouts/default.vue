@@ -27,13 +27,13 @@
     </main>
 
     <footer class="border-t border-slate-200/60 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80">
-      <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-slate-500 flex items-center justify-between">
+      <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-slate-500 flex items-center justify-center">
         <p>© {{ new Date().getFullYear() }} Beno. All rights reserved.</p>
-        <div class="hidden sm:flex items-center gap-4">
+        <!-- <div class="hidden sm:flex items-center gap-4">
           <a :href="social.github" target="_blank" rel="noopener" class="hover:text-slate-700 dark:hover:text-slate-200">GitHub</a>
           <a :href="social.linkedin" target="_blank" rel="noopener" class="hover:text-slate-700 dark:hover:text-slate-200">LinkedIn</a>
           <a :href="social.email" class="hover:text-slate-700 dark:hover:text-slate-200">Email</a>
-        </div>
+        </div> -->
       </div>
     </footer>
   </div>

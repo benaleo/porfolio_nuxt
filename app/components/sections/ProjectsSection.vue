@@ -16,11 +16,13 @@
         </div>
       </div>
 
-      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="p in filtered" :key="p.id" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }">
-          <ProjectCard :project="p" />
+      <ClientOnly>
+        <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div v-for="p in filtered" :key="p.id" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }">
+            <ProjectCard :project="p" />
+          </div>
         </div>
-      </div>
+      </ClientOnly>
     </div>
   </section>
 </template>
