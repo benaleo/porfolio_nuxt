@@ -12,6 +12,7 @@
         <NuxtLink to="/console/education" class="block px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Education</NuxtLink>
         <NuxtLink to="/console/experience" class="block px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Experience</NuxtLink>
         <NuxtLink to="/console/request-contact" class="block px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Request Contact</NuxtLink>
+        <NuxtLink to="/console/log-trafic" class="block px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Log Trafic</NuxtLink>
       </nav>
       <div class="mt-auto p-3">
         <button @click="logout" class="w-full text-left px-3 py-2 rounded bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-300">Logout</button>
