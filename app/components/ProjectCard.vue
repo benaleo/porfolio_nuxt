@@ -19,11 +19,11 @@
 
 <script setup lang="ts">
 export interface Project {
-  id: string
+  id: number
   title: string
   description: string
-  image?: string
-  category?: 'Backend' | 'Frontend' | 'Fullstack' | string
+  image?: string | null
+  category?: 'Backend' | 'Frontend' | 'Fullstack' | 'Other' | string
   tags?: string[]
 }
 

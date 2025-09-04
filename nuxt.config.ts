@@ -5,6 +5,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+  routeRules: {
+    '/uploads/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    },
+  },
   app: {
     head: {
       title: 'Beno – Fullstack Developer',
@@ -21,6 +28,11 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    auth: {
+      adminUsername: process.env.ADMIN_USERNAME,
+      adminPassword: process.env.ADMIN_PASSWORD,
+      jwtSecret: process.env.JWT_SECRET,
+    },
     contact: {
       // e.g. https://formspree.io/f/xxxxxx
       formspreeEndpoint: process.env.FORMSPREE_ENDPOINT || '',

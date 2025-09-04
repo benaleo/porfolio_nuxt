@@ -18,5 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { educationTimeline as education } from '~/data/education'
+type DbEducation = { id: number; year: string; institution: string; major: string; summary?: string | null }
+const { data: eduRaw } = await useAsyncData('education-list', () => $fetch<DbEducation[]>('/api/education'))
+// Map DB fields to UI shape expected by the template
+const education = computed(() => (eduRaw.value || []).map((e) => ({ year: e.year, university: e.institution, major: e.major })))
 </script>

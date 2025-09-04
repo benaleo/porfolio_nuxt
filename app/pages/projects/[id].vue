@@ -17,14 +17,24 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { projects, type Project } from '~/data/projects'
 import { showError } from '#app'
+
+type Project = {
+  id: number
+  title: string
+  description: string
+  category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other' | string
+  image?: string | null
+  tags?: string[]
+}
 
 const route = useRoute()
 const id = route.params.id as string
-const project = projects.find((p) => p.id === id) as Project | undefined
 
-if (!project) {
-  showError({ statusCode: 404, statusMessage: 'Project not found' })
+const { data: project, error } = await useAsyncData(`project-${id}`, () => $fetch<Project>(`/api/projects/${id}`))
+
+if (error.value) {
+  const statusCode = (error.value as any)?.statusCode || 404
+  showError({ statusCode, statusMessage: 'Project not found' })
 }
 </script>

@@ -27,13 +27,23 @@
 
 <script setup lang="ts">
 import ProjectCard from '~/components/ProjectCard.vue'
-import { projects } from '~/data/projects'
+type Project = {
+  id: number
+  title: string
+  description: string
+  category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other' | string
+  image?: string | null
+  tags?: string[]
+}
 
 const selected = ref<'All' | string>('All')
 
-const categories = computed(() => Array.from(new Set(projects.map((p) => p.category))))
+const { data: projects } = await useAsyncData('projects-list', () => $fetch<Project[]>('/api/projects'))
 
-const filtered = computed(() =>
-  selected.value === 'All' ? projects : projects.filter((p) => p.category === selected.value),
-)
+const categories = computed(() => Array.from(new Set((projects.value || []).map((p) => p.category))))
+
+const filtered = computed(() => {
+  const list = projects.value || []
+  return selected.value === 'All' ? list : list.filter((p) => p.category === selected.value)
+})
 </script>

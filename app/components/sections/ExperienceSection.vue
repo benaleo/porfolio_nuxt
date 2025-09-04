@@ -16,5 +16,23 @@
 </template>
 
 <script setup lang="ts">
-import { experiences } from '~/data/experience'
+type DbExperience = {
+  id: number
+  startYear: number
+  endYear?: number | null
+  position: string
+  company: string
+  summary?: string | null
+}
+
+const { data: expRaw } = await useAsyncData('experience-list', () => $fetch<DbExperience[]>('/api/experience'))
+
+const experiences = computed(() =>
+  (expRaw.value || []).map((x) => ({
+    role: x.position,
+    company: x.company,
+    description: x.summary || '',
+    period: `${x.startYear} - ${x.endYear ?? 'Present'}`,
+  })),
+)
 </script>
