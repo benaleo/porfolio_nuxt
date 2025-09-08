@@ -66,11 +66,15 @@
           </div>
           <div>
             <label class="block text-sm mb-1">Summary (optional)</label>
-            <textarea
-              v-model="form.summary"
-              rows="5"
-              class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none"
-            ></textarea>
+            <ClientOnly>
+              <QuillEditor
+                v-model:content="form.summary"
+                contentType="html"
+                theme="snow"
+                toolbar="full"
+                class="bg-white dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-700"
+              />
+            </ClientOnly>
           </div>
           <div class="flex items-center gap-2 pt-2">
             <button
@@ -182,6 +186,7 @@
 
 <script setup lang="ts">
 import admin from "../../../middleware/admin";
+import { QuillEditor } from "@vueup/vue-quill";
 
 definePageMeta({ layout: "console", middleware: [admin] });
 
