@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
     name?: string
     avatar?: string | null
     bio?: string | null
+    tagline?: string | null
     contactNumber?: string | null
     github?: string | null
     linkedin?: string | null

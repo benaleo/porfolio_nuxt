@@ -4,6 +4,7 @@
       <IntroSection
         :name="profile?.name"
         :avatar="profile?.avatar"
+        :tagline="profile?.tagline"
         :bio="profile?.bio"
         :contactNumber="profile?.contactNumber"
         :github="profile?.github"
