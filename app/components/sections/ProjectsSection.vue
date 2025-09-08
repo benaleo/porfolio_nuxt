@@ -54,3 +54,19 @@ const filtered = computed(() => {
   return selected.value === 'All' ? list : list.filter((p) => p.category === selected.value)
 })
 </script>
+
+<style scoped>
+/* Minimal prose styles for rendered HTML content */
+.prose :where(p) {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.prose :where(h1) { font-size: 1.5rem; font-weight: 700; margin: 1.25rem 0 0.75rem; }
+.prose :where(h2) { font-size: 1.25rem; font-weight: 700; margin: 1rem 0 0.5rem; }
+.prose :where(h3) { font-size: 1.125rem; font-weight: 600; margin: 0.75rem 0 0.5rem; }
+.prose :where(ul) { list-style: disc; padding-left: 1.25rem; margin: 0.75rem 0; }
+.prose :where(ol) { list-style: decimal; padding-left: 1.25rem; margin: 0.75rem 0; }
+.prose :where(a) { color: #2563eb; text-decoration: underline; }
+.prose :where(img) { border-radius: 0.5rem; max-width: 100%; height: auto; }
+.dark .prose :where(a) { color: #93c5fd; }
+</style>

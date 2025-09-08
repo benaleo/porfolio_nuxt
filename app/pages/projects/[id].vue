@@ -7,7 +7,7 @@
       <div class="mt-6 aspect-[16/9] bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden">
         <img v-if="project?.image" :src="project?.image" :alt="project?.title" class="w-full h-full object-cover" />
       </div>
-      <p class="mt-6 text-lg text-slate-700 dark:text-slate-200 whitespace-pre-line">{{ project?.description }}</p>
+      <div class="mt-6 prose dark:prose-invert" v-html="project?.description"></div>
       <div v-if="project?.tags?.length" class="mt-4 flex flex-wrap gap-2">
         <span v-for="t in project?.tags" :key="t" class="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">#{{ t }}</span>
       </div>
