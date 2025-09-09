@@ -71,8 +71,8 @@
                 v-model:content="form.summary"
                 contentType="html"
                 theme="snow"
-                toolbar="full"
-                class="bg-white dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-700"
+                toolbar="hidden"
+                class="contents bg-white rounded border border-slate-300 dark:border-slate-700"
               />
             </ClientOnly>
           </div>

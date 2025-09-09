@@ -23,8 +23,7 @@
               {{ format(b.publishedAt || b.createdAt) }}
             </div>
             <div class="mt-1 font-semibold">{{ b.title }}</div>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
-              {{ excerpt(b.content) }}
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 prose prose-slate line-clamp-3" v-html="b.content">
             </p>
           </NuxtLink>
         </div>
@@ -51,5 +50,4 @@ const { data: posts } = await useAsyncData("blog-list", () =>
 const postItems = computed(() => posts.value?.items || []);
 const format = (s?: string | null) =>
   s ? new Date(s).toLocaleDateString() : "";
-const excerpt = (s: string) => (s.length > 120 ? s.slice(0, 120) + "…" : s);
 </script>
