@@ -3,7 +3,7 @@
 /* Base and global tweaks */
 @layer base {
   html { scroll-behavior: smooth; }
-  body { @apply bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased; }
+  body { @apply bg-white  text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased; }
 }
 
 /* Galaxy background with twinkling stars */

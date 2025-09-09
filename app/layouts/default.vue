@@ -4,16 +4,16 @@
       <GalaxyBackground />
     </ClientOnly>
 
-    <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/60 bg-white/80 border-b border-slate-200/60">
+    <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/60 bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/60 dark:border-slate-800">
       <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-        <a href="#intro" class="font-semibold tracking-tight text-slate-800">Beno</a>
+        <a href="#intro" class="font-semibold tracking-tight text-slate-800 dark:text-slate-100">Beno</a>
         <div class="hidden md:flex items-center gap-6 text-sm">
-          <a href="#projects" class="hover:text-blue-600">Projects</a>
-          <a href="#education" class="hover:text-blue-600">Study</a>
-          <a href="#experience" class="hover:text-blue-600">Experience</a>
-          <a href="#counters" class="hover:text-blue-600">Counters</a>
-          <a href="#blog" class="hover:text-blue-600">Blog</a>
-          <a href="#contact" class="hover:text-blue-600">Contact</a>
+          <a :href="`${siteUrl}#projects`" class="hover:text-blue-600">Projects</a>
+          <a :href="`${siteUrl}#education`" class="hover:text-blue-600">Study</a>
+          <a :href="`${siteUrl}#experience`" class="hover:text-blue-600">Experience</a>
+          <a :href="`${siteUrl}#counters`" class="hover:text-blue-600">Counters</a>
+          <a :href="`${siteUrl}#blog`" class="hover:text-blue-600">Blog</a>
+          <a :href="`${siteUrl}#contact`" class="hover:text-blue-600">Contact</a>
         </div>
         <div class="md:hidden flex items-center gap-2"></div>
       </nav>
@@ -38,5 +38,7 @@
 
 <script setup lang="ts">
 
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl
 
 </script>
