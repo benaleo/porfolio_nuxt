@@ -1,33 +1,29 @@
 export function useTheme() {
   const isDark = useState<boolean>('isDark', () => false)
 
-  const apply = (val: boolean) => {
+  const apply = (_val: boolean) => {
+    // Dark mode disabled: ensure 'dark' class is removed
     if (typeof document === 'undefined') return
-    const root = document.documentElement
-    root.classList.toggle('dark', val)
+    document.documentElement.classList.remove('dark')
   }
 
   const detect = () => {
-    if (typeof window === 'undefined') return false
-    const saved = localStorage.getItem('theme')
-    if (saved === 'dark') return true
-    if (saved === 'light') return false
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    // Always light mode
+    return false
   }
 
   onMounted(() => {
-    const val = detect()
-    isDark.value = val
-    apply(val)
+    isDark.value = false
+    apply(false)
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('theme', 'light')
+    }
   })
 
   const toggle = () => {
-    const val = !isDark.value
-    isDark.value = val
-    apply(val)
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('theme', val ? 'dark' : 'light')
-    }
+    // No-op: dark mode disabled
+    isDark.value = false
+    apply(false)
   }
 
   return { isDark, toggle }

@@ -9,7 +9,8 @@
               <div class="font-semibold">{{ x.role }} <span class="text-slate-500">@ {{ x.company }}</span></div>
               <div class="text-sm text-slate-500">{{ x.period }}</div>
             </div>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">{{ x.description }}</p>
+            <div class="mt-2 text-slate-600 dark:text-slate-300 prose prose-slate" v-html="x.description">
+            </div>
           </div>
         </div>
       </ClientOnly>

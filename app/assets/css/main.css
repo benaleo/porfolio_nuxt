@@ -3,7 +3,7 @@
 /* Base and global tweaks */
 @layer base {
   html { scroll-behavior: smooth; }
-  body { @apply bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased; }
+  body { @apply bg-white  text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased; }
 }
 
 /* Galaxy background with twinkling stars */
@@ -46,4 +46,8 @@
 @keyframes twinkle {
   0%, 100% { opacity: 0.25; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.6); }
+}
+
+.form-control {
+  @apply w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200
 }

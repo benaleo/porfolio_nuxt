@@ -42,7 +42,11 @@
           </div>
           <div class="sm:col-span-2">
             <label class="block text-sm mb-1">Email</label>
-            <input v-model="form.email" type="email" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" />
+            <input v-model="form.email" type="email" class="form-control" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm mb-1">Tagline</label>
+            <input v-model="form.tagline" type="text" class="form-control" />
           </div>
           <div class="sm:col-span-2">
             <label class="block text-sm mb-1">Bio</label>
@@ -87,6 +91,7 @@ type Profile = {
   name: string
   avatar: string | null
   bio: string | null
+  tagline: string | null
   contactNumber: string | null
   github: string | null
   linkedin: string | null
@@ -102,6 +107,7 @@ const form = reactive<Profile>({
   name: initial.value?.name || '',
   avatar: initial.value?.avatar || null,
   bio: initial.value?.bio || null,
+  tagline: initial.value?.tagline || null,
   contactNumber: initial.value?.contactNumber || null,
   github: initial.value?.github || null,
   linkedin: initial.value?.linkedin || null,

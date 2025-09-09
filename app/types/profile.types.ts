@@ -3,6 +3,7 @@ export type Profile = {
     avatar?: string | null;
     contactNumber?: string | null;
     bio?: string | null;
+    tagline?: string | null;
     github?: string | null;
     linkedin?: string | null;
     email?: string | null;

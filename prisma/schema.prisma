@@ -20,6 +20,7 @@ enum ProjectCategory {
 model Profile {
   id               Int      @id @default(1)
   name             String
+  tagline          String?
   avatar           String?  // /uploads/<file>
   bio              String?
   contactNumber    String?

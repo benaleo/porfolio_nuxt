@@ -43,12 +43,21 @@
           </div>
           <div>
             <label class="block text-sm mb-1">Content</label>
-            <textarea
+            <!-- <textarea
               v-model="form.content"
               rows="8"
               class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200"
               required
-            ></textarea>
+            ></textarea> -->
+            <ClientOnly>
+              <QuillEditor
+                v-model:content="form.content"
+                contentType="html"
+                theme="snow"
+                toolbar="hidden"
+                class="contents bg-white rounded border border-slate-300 dark:border-slate-700"
+              />
+            </ClientOnly>
           </div>
           <div class="grid sm:grid-cols-2 gap-3">
             <div>
@@ -194,6 +203,7 @@
 </template>
 
 <script setup lang="ts">
+import { QuillEditor } from "@vueup/vue-quill";
 import admin from "../../../middleware/admin";
 
 definePageMeta({ layout: "console", middleware: [admin] });
