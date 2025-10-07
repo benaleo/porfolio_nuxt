@@ -48,7 +48,7 @@
               :href="props.github || ''"
               target="_blank"
               rel="noopener"
-              class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition"
+              class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               aria-label="GitHub"
             >
               <svg
@@ -67,7 +67,7 @@
               :href="props.linkedin || ''"
               target="_blank"
               rel="noopener"
-              class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition"
+              class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               aria-label="LinkedIn"
             >
               <svg
@@ -83,7 +83,7 @@
             </a>
             <a
               :href="props.email || ''"
-              class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition"
+              class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               aria-label="Email"
             >
               <svg
@@ -103,7 +103,7 @@
             <a
               href="/cv.pdf"
               download
-              class="inline-flex items-center gap-2 rounded-lg bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition"
+              class="inline-flex items-center gap-2 rounded-lg bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 dark:hover:bg-blue-600 transition"
             >
               Download CV
             </a>
