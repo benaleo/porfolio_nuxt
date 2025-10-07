@@ -8,16 +8,7 @@
     <div class="content-overlay">
       <div class="glowing-square">
         <div class="text-container">
-          <p class="intro-text">Halo, saya seorang Fullstack Developer dengan keahlian utama pada bahasa pemrograman Java, Go, PHP, dan Vue.</p>
-          <p class="detail-text">Saya berpengalaman menggunakan framework modern seperti Spring Boot (Java), Gin & Fiber (Go), Laravel (PHP), serta Nuxt.js (Vue).</p>
-          <p class="detail-text">Dalam pengembangan aplikasi, saya terbiasa membangun REST API maupun GraphQL API, serta memiliki pemahaman mendalam tentang database SQL maupun NoSQL seperti MySQL, PostgreSQL, MongoDB, dan Elasticsearch.</p>
-          <p class="detail-text">Selain itu, saya juga memiliki pengalaman bekerja di software house sebagai Project Manager sekaligus Developer, dengan portofolio proyek yang beragam, antara lain:</p>
-          <ul class="project-list">
-            <li>Aplikasi Event (Expo, pemerintahan, dan komunitas)</li>
-            <li>Aplikasi Perbankan</li>
-            <li>Website Company Profile dengan optimasi SEO</li>
-          </ul>
-          <p class="conclusion-text">Dengan kombinasi kemampuan teknis dan pengalaman manajemen proyek, saya mampu memberikan solusi end-to-end mulai dari perencanaan, pengembangan, hingga deployment aplikasi.</p>
+          <p v-html="bio"></p>
         </div>
         <!-- close button -->
         <button @click="$emit('close')" class="close-button outline-2 outline-white px-6 py-2 rounded-xl cursor-pointer">Close</button>
@@ -26,10 +17,19 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PortfolioPage',
-}
+<script setup lang="ts">
+import { defineProps } from 'vue';
+const props = defineProps({
+  bio: {
+    type: String,
+    required: true
+  },
+  showBiography: {
+    type: Boolean,
+    required: true
+  }
+})
+
 </script>
 
 <style scoped>
@@ -75,7 +75,7 @@ export default {
   border-image: linear-gradient(45deg, #ff007b, #ff8c00, #00ffff) 1; /* Gradien warna neon */
   box-shadow: 0 0 50px rgba(255, 0, 123, 0.7), 0 0 100px rgba(0, 255, 255, 0.7);
   animation: glowPulse 3s ease-in-out infinite alternate; /* Animasi kedip pada bingkai */
-  background: rgba(0, 0, 0, 0.6); /* Latar belakang semi-transparan untuk teks */
+  background: rgba(0, 0, 0, 0.8); /* Latar belakang semi-transparan untuk teks */
   border-radius: 10px; /* Sedikit rounded corner */
   display: flex;
   flex-direction: column;

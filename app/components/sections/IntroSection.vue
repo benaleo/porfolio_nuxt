@@ -39,7 +39,7 @@
             class="fixed top-0 left-0 right-0 bottom-0 z-50 transition-opacity duration-800"
             :class="{ 'opacity-100': showBiography, 'opacity-0': !showBiography }"
           >
-            <BiographyElement :showBiography="showBiography" @close="closeBiography" />
+            <BiographyElement :bio="props.bio" :showBiography="showBiography" @close="closeBiography" />
           </div>
 
           <div class="mt-5 flex items-center justify-center gap-4">
