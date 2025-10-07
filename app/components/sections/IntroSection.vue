@@ -18,11 +18,11 @@
             />
           </div>
           <h1
-            class="mt-6 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight"
+            class="mt-6 text-3xl sm:text-4xl md:text-5xl text-slate-100 font-extrabold tracking-tight"
           >
             {{ props.name }}
           </h1>
-          <p class="mt-3 text-slate-600 dark:text-slate-300">
+          <p class="mt-3 text-slate-300">
             {{
               props.tagline ||
               "Fullstack Developer | Spring Boot • Golang • Vue/Nuxt"
@@ -48,7 +48,7 @@
               :href="props.github || ''"
               target="_blank"
               rel="noopener"
-              class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition"
               aria-label="GitHub"
             >
               <svg
@@ -67,7 +67,7 @@
               :href="props.linkedin || ''"
               target="_blank"
               rel="noopener"
-              class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition"
               aria-label="LinkedIn"
             >
               <svg
@@ -83,7 +83,7 @@
             </a>
             <a
               :href="props.email || ''"
-              class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition"
               aria-label="Email"
             >
               <svg
@@ -109,7 +109,7 @@
             </a>
             <a
               href="#contact"
-              class="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              class="inline-flex items-center gap-2 rounded-lg text-white hover:text-slate-700 border border-slate-700 px-4 py-2 hover:bg-slate-100 transition"
             >
               Contact Me
             </a>
