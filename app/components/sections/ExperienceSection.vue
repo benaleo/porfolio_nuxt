@@ -1,7 +1,7 @@
 <template>
   <section v-if="experiences.length > 0" class="py-20">
     <div class="mx-auto max-w-5xl px-4">
-      <h2 class="text-2xl sm:text-3xl font-bold">Experience</h2>
+      <h2 class="text-2xl sm:text-3xl text-white font-bold">Experience</h2>
       <ClientOnly>
         <div class="mt-8 space-y-6">
           <div v-for="(x, i) in experiences" :key="i" class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
