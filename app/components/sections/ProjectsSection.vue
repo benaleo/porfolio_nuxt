@@ -81,6 +81,11 @@ function resetVisible() {
 const displayed = computed(() => filtered.value.slice(0, visibleCount.value))
 
 function onLoadMore() {
+  // If already showing at least 6 items, go to the full projects page
+  if (visibleCount.value >= 6 && filtered.value.length > visibleCount.value) {
+    navigateTo('/projects')
+    return
+  }
   const inc = baseChunk()
   visibleCount.value = Math.min(filtered.value.length, visibleCount.value + inc)
 }
