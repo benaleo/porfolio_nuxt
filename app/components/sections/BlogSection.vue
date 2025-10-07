@@ -2,7 +2,7 @@
   <section class="py-20" id="blog">
     <div class="mx-auto max-w-6xl px-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-2xl sm:text-3xl font-bold">Blog</h2>
+        <h2 class="text-2xl text-white sm:text-3xl font-bold">Blog</h2>
       </div>
 
       <ClientOnly>
