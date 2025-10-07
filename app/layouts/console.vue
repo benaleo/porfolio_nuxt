@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-dvh flex bg-slate-50 dark:bg-slate-950">
+  <div class="min-h-dvh flex bg-slate-50 dark:bg-slate-950 overflow-hidden">
     <aside
       class="w-64 shrink-0 border-r border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur hidden md:flex md:flex-col"
     >
@@ -70,7 +70,7 @@
         <div class="text-sm text-slate-500">{{ now }}</div>
       </header>
       <ClientOnly>
-        <main class="p-4">
+        <main class="px-4 pb-36 overflow-y-auto min-h-[calc(100vh-56px)]">
           <slot />
         </main>
       </ClientOnly>

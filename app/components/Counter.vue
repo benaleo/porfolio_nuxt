@@ -1,7 +1,7 @@
 <template>
-  <div ref="el" class="text-center select-none">
-    <div class="text-4xl sm:text-5xl font-extrabold text-blue-600 dark:text-blue-400">{{ displayValue }}</div>
-    <div class="mt-1 text-sm text-slate-500 dark:text-slate-400"><slot /></div>
+  <div ref="el" class="text-center select-none group">
+    <div class="text-4xl sm:text-5xl font-extrabold text-blue-600/70 group-hover:text-blue-700">{{ displayValue }}</div>
+    <div class="mt-1 text-sm text-slate-100 group-hover:text-white"><slot /></div>
   </div>
 </template>
 

@@ -1,15 +1,15 @@
 <template>
   <section v-if="experiences.length > 0" class="py-20">
-    <div class="mx-auto max-w-5xl px-4">
-      <h2 class="text-2xl sm:text-3xl font-bold">Experience</h2>
+    <div class="mx-auto max-w-6xl px-4">
+      <h2 class="text-2xl sm:text-3xl text-white font-bold">Experience</h2>
       <ClientOnly>
         <div class="mt-8 space-y-6">
-          <div v-for="(x, i) in experiences" :key="i" class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
+          <div v-for="(x, i) in experiences" :key="i" class="group card-blue-neon" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="font-semibold">{{ x.role }} <span class="text-slate-500">@ {{ x.company }}</span></div>
-              <div class="text-sm text-slate-500">{{ x.period }}</div>
+              <div class="font-semibold text-white">{{ x.role }} <span class="text-slate-100">@ {{ x.company }}</span></div>
+              <div class="text-sm text-slate-200">{{ x.period }}</div>
             </div>
-            <div class="mt-2 text-slate-600 dark:text-slate-300 prose prose-slate" v-html="x.description">
+            <div class="mt-2 text-slate-300 group-hover:text-slate-100 transition prose prose-slate" v-html="x.description">
             </div>
           </div>
         </div>

@@ -21,7 +21,7 @@
         class="absolute z-50 top-0 left-0 w-full h-fit"
       >
         <form
-          class="w-full h-full px-4 py-2 grid bg-white text-slate-700 rounded-xl border border-slate-200 space-y-3"
+          class="w-full h-full px-4 pt-4 pb-24 grid bg-white text-slate-700 rounded-xl border border-slate-200 space-y-3"
           @submit.prevent="onSave"
         >
           <div class="text-sm font-medium bg-white text-slate-700">
