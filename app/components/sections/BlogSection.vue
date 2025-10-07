@@ -14,16 +14,16 @@
             v-for="b in postItems"
             :key="b.id"
             :to="`/blog/${b.slug}`"
-            class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80 hover:shadow-lg transition"
+            class="group card-blue-neon"
             v-motion
             :initial="{ opacity: 0, y: 20 }"
             :enter="{ opacity: 1, y: 0 }"
           >
-            <div class="text-xs text-slate-500">
+            <div class="text-xs text-slate-100">
               {{ format(b.publishedAt || b.createdAt) }}
             </div>
-            <div class="mt-1 font-semibold">{{ b.title }}</div>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 prose prose-slate line-clamp-3" v-html="b.content">
+            <div class="mt-1 font-semibold text-white">{{ b.title }}</div>
+            <p class="mt-2 text-sm text-slate-300 group-hover:text-white transition prose prose-slate line-clamp-3" v-html="b.content">
             </p>
           </NuxtLink>
         </div>
