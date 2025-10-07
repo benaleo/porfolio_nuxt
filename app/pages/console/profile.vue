@@ -22,7 +22,7 @@
       </div>
 
       <!-- Form -->
-      <form class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80 space-y-4" @submit.prevent="onSubmit">
+      <form class="rounded-xl border border-slate-200 dark:border-slate-800 px-4 pt-4 pb-24 bg-white/80 dark:bg-slate-900/80 space-y-4" @submit.prevent="onSubmit">
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm mb-1">Name</label>

@@ -18,7 +18,7 @@
         <!-- Editor -->
         <form
           v-if="editing"
-          class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-3"
+          class="rounded-xl border border-slate-200 dark:border-slate-800 px-4 pt-4 pb-24  space-y-3"
           @submit.prevent="onSave"
         >
           <div class="text-sm font-medium">

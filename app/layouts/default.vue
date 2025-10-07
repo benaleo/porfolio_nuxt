@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-dvh flex flex-col">
+  <div class="min-h-dvh flex flex-col overflow-hidden">
     <ClientOnly>
       <GalaxyBackground />
     </ClientOnly>
