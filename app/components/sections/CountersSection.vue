@@ -13,7 +13,7 @@
             Completed Projects
           </Counter>
         </div>
-        <div class="flex-center">
+        <div class="flex-center col-span-2 mt-[-24px] md:mt-0 md:col-span-1">
           <Counter :to="ossVal" suffix="+" class="counter-item">
             OSS Contributions
           </Counter>
