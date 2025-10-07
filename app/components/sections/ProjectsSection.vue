@@ -7,7 +7,7 @@
           <button
             v-for="cat in ['All', ...categories]"
             :key="cat"
-            @click="selected = cat"
+            @click="selected = cat; resetVisible()"
             class="px-3 py-1 rounded-full border border-slate-700 hover:bg-slate-100 text-white hover:text-slate-700 transition"
             :class="{ 'bg-blue-600 text-white border-blue-600': selected === cat }"
           >
@@ -18,9 +18,20 @@
 
       <ClientOnly>
         <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="rounded-xl card-blue-neon" :style="{ padding: '0' }" v-for="p in filtered" :key="p.id" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }">
+          <div class="rounded-xl card-blue-neon" :style="{ padding: '0' }" v-for="p in displayed" :key="p.id" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }">
             <ProjectCard :project="p" />
           </div>
+        </div>
+
+        <!-- Load more: mobile threshold 3, desktop 6 -->
+        <div class="mt-6 flex justify-center">
+          <button
+            v-if="filtered.length > visibleCount"
+            class="btn btn-primary"
+            @click="onLoadMore"
+          >
+            Load More
+          </button>
         </div>
       </ClientOnly>
     </div>
@@ -52,6 +63,51 @@ const categories = computed(() =>
 const filtered = computed(() => {
   const list = projects.value?.items || []
   return selected.value === 'All' ? list : list.filter((p) => p.category === selected.value)
+})
+
+// Responsive Load More logic
+const visibleCount = ref(0)
+const isDesktop = ref(false)
+
+function baseChunk() {
+  return isDesktop.value ? 6 : 3
+}
+
+function resetVisible() {
+  const base = baseChunk()
+  visibleCount.value = Math.min(base, filtered.value.length)
+}
+
+const displayed = computed(() => filtered.value.slice(0, visibleCount.value))
+
+function onLoadMore() {
+  const inc = baseChunk()
+  visibleCount.value = Math.min(filtered.value.length, visibleCount.value + inc)
+}
+
+onMounted(() => {
+  const mq = window.matchMedia('(min-width: 1024px)')
+  const apply = () => {
+    isDesktop.value = mq.matches
+    // If not initialized or below base, set to base
+    const base = baseChunk()
+    if (visibleCount.value === 0 || visibleCount.value < base) {
+      visibleCount.value = Math.min(base, filtered.value.length)
+    }
+  }
+  apply()
+  mq.addEventListener?.('change', apply)
+  // Fallback for older browsers
+  // @ts-ignore
+  mq.addListener && mq.addListener(apply)
+})
+
+onBeforeUnmount(() => {
+  const mq = window.matchMedia('(min-width: 1024px)')
+  const apply = () => {}
+  mq.removeEventListener?.('change', apply)
+  // @ts-ignore
+  mq.removeListener && mq.removeListener(apply)
 })
 </script>
 
