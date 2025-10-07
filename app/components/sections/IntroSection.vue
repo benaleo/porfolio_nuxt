@@ -1,5 +1,5 @@
 <template>
-  <section class="relative py-16 sm:py-20">
+  <section class="relative py-36 sm:py-20">
     <div class="mx-auto max-w-5xl px-4">
       <ClientOnly>
         <div

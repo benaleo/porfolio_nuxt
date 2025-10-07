@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-dvh flex flex-col overflow-hidden">
+  <div class="min-h-dvh flex flex-col overflow-x-hidden relative">
     <ClientOnly>
       <GalaxyBackground />
     </ClientOnly>
 
-    <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60 bg-slate-900/80 border-b border-slate-800">
+    <header class="fixed w-full top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60 bg-slate-900/80 border-b border-slate-800">
       <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <a href="#intro" class="font-semibold tracking-tight text-slate-100">Beno</a>
         <div class="hidden md:flex items-center gap-6 text-sm text-slate-100">
