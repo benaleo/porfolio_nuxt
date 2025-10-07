@@ -6,7 +6,7 @@
     </video>
 
     <div class="content-overlay">
-      <div class="glowing-square">
+      <div class="glowing-square w-[90%] md:w-[70%] md:p-6">
         <div class="text-container">
           <p v-html="bio"></p>
         </div>
@@ -67,10 +67,8 @@ const props = defineProps({
 
 .glowing-square {
   position: relative;
-  width: 70%; /* Ukuran bingkai bisa disesuaikan */
   max-width: 900px;
   height: auto; /* Sesuaikan tinggi agar teks muat */
-  padding: 2rem;
   border: 4px solid;
   border-image: linear-gradient(45deg, #ff007b, #ff8c00, #00ffff) 1; /* Gradien warna neon */
   box-shadow: 0 0 50px rgba(255, 0, 123, 0.7), 0 0 100px rgba(0, 255, 255, 0.7);
