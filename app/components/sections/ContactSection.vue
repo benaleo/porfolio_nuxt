@@ -1,21 +1,21 @@
 <template>
   <section class="py-20" id="contact">
     <div class="mx-auto max-w-3xl px-4">
-      <h2 class="text-2xl sm:text-3xl font-bold text-center">Contact</h2>
+      <h2 class="text-2xl text-white sm:text-3xl font-bold text-center">Contact</h2>
 
       <form class="mt-8 space-y-4" @submit.prevent="submit">
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm text-slate-500">Name</label>
+            <label class="block text-sm text-white">Name</label>
             <input v-model="formName" type="text" required class="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label class="block text-sm text-slate-500">Email</label>
+            <label class="block text-sm text-white">Email</label>
             <input v-model="formEmail" type="email" required class="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
         <div>
-          <label class="block text-sm text-slate-500">Message</label>
+          <label class="block text-sm text-white">Message</label>
           <textarea v-model="formMessage" rows="4" required class="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"></textarea>
         </div>
         <div class="flex items-center gap-3">
@@ -28,7 +28,7 @@
         </div>
       </form>
 
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-4 text-sm text-slate-600 dark:text-slate-300">
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4 text-sm text-white">
         <a :href="phoneHref" class="inline-flex items-center gap-2 hover:text-blue-600">
           <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' class='w-4 h-4'><path d='M6.62 10.79a15.534 15.534 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V21a1 1 0 01-1 1C10.07 22 2 13.93 2 3a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z'/></svg>
           {{ displayPhone }}
