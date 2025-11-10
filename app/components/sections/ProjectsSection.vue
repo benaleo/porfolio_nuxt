@@ -27,7 +27,7 @@
         <div class="mt-6 flex justify-center">
           <button
             v-if="filtered.length > visibleCount"
-            class="btn btn-primary"
+            class="btn btn-primary cursor-pointer hover:border-2 hover:rounded-2xl hover:border-white px-6 py-2"
             @click="onLoadMore"
           >
             Load More
@@ -66,11 +66,11 @@ const filtered = computed(() => {
 })
 
 // Responsive Load More logic
+const isDesktop = ref(typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : false)
 const visibleCount = ref(0)
-const isDesktop = ref(false)
 
 function baseChunk() {
-  return isDesktop.value ? 6 : 3
+  return isDesktop.value ? 3 : 3
 }
 
 function resetVisible() {
@@ -78,7 +78,9 @@ function resetVisible() {
   visibleCount.value = Math.min(base, filtered.value.length)
 }
 
-const displayed = computed(() => filtered.value.slice(0, visibleCount.value))
+const displayed = computed(() => {
+  return filtered.value.slice(0, visibleCount.value)
+})
 
 function onLoadMore() {
   // If already showing at least 6 items, go to the full projects page
@@ -94,11 +96,8 @@ onMounted(() => {
   const mq = window.matchMedia('(min-width: 1024px)')
   const apply = () => {
     isDesktop.value = mq.matches
-    // If not initialized or below base, set to base
     const base = baseChunk()
-    if (visibleCount.value === 0 || visibleCount.value < base) {
-      visibleCount.value = Math.min(base, filtered.value.length)
-    }
+    visibleCount.value = Math.min(base, filtered.value.length)
   }
   apply()
   mq.addEventListener?.('change', apply)
