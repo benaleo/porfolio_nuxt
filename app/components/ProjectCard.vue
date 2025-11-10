@@ -1,6 +1,6 @@
 <template>
   <div class="h-full">
-    <NuxtLink :to="`/projects/${project.id}`" class="group relative block h-full">
+    <NuxtLink :to="{ name: 'projects-id', params: { id: project.id } }" class="group relative block h-full">
     <div class="aspect-[16/9] bg-slate-800 overflow-hidden">
       <img v-if="project.image" :src="project.image" :alt="project.title" class="w-full h-full object-cover group-hover:scale-[1.03] transition" />
       <div v-else class="w-full h-full grid place-items-center text-slate-400">No Image</div>
