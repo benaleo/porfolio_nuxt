@@ -6,7 +6,7 @@
 
     <header class="fixed w-full top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60 bg-slate-900/80 border-b border-slate-800">
       <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-        <a href="#intro" class="font-semibold tracking-tight text-slate-100">Beno</a>
+        <a :href="siteUrl" class="font-semibold tracking-tight text-slate-100">Beno</a>
         <div class="hidden md:flex items-center gap-6 text-sm text-slate-100">
           <a :href="`${siteUrl}#projects`" class="hover:text-blue-600">Projects</a>
           <a :href="`${siteUrl}#education`" class="hover:text-blue-600">Study</a>

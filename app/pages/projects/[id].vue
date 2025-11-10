@@ -1,4 +1,5 @@
 <template>
+  <ClientOnly>
   <div class="mx-auto max-w-3xl px-4 py-16">
     <NuxtLink to="/" class="text-sm text-blue-600">← Back to Home</NuxtLink>
     <div v-if="project" class="mt-4">
@@ -13,6 +14,7 @@
       </div>
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

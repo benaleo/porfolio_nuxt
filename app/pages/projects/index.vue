@@ -26,17 +26,19 @@
       </div>
 
       <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div
-          class="rounded-xl card-blue-neon"
-          :style="{ padding: '0' }"
-          v-for="p in filtered"
-          :key="p.id"
-          v-motion
-          :initial="{ opacity: 0, y: 20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }"
-        >
-          <ProjectCard :project="p" />
-        </div>
+        <ClientOnly>
+          <div
+            class="rounded-xl card-blue-neon"
+            :style="{ padding: '0' }"
+            v-for="p in filtered"
+            :key="p.id"
+            v-motion
+            :initial="{ opacity: 0, y: 20 }"
+            :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }"
+          >
+            <ProjectCard :project="p" />
+          </div>
+        </ClientOnly>
       </div>
 
       <div v-if="filtered.length === 0" class="mt-10 text-center text-sm text-slate-400">
