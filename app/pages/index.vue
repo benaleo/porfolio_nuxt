@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LockScreen v-if="!isUnlocked" @unlocked="handleUnlock" />
+    <div v-else>
     <section id="intro">
       <IntroSection
         :name="profile?.name"
@@ -26,6 +28,7 @@
     <section id="contact">
       <ContactSection :email="profile?.email" :phone="profile?.contactNumber" />
     </section>
+    </div>
   </div>
 </template>
 
@@ -39,11 +42,27 @@ import BlogSection from "~/components/sections/BlogSection.vue";
 import ContactSection from "~/components/sections/ContactSection.vue";
 import type { Profile } from "~/types/profile.types";
 import { useLogTrafic } from "~/composables/useLogTrafic";
+import LockScreen from "~/components/LockScreen.vue";
 
 const { data: profile } = await useAsyncData("profile", () =>
   $fetch<Profile | null>("/api/profile")
 );
 
+const isUnlocked = ref(false);
+
+onMounted(() => {
+  // Check if already unlocked in this session
+  const sessionUnlocked = sessionStorage.getItem('appUnlocked');
+  isUnlocked.value = sessionUnlocked === 'true';
+});
+
+const handleUnlock = () => {
+  isUnlocked.value = true;
+  sessionStorage.setItem('appUnlocked', 'true');
+};
+
 // Log traffic on client mount
-useLogTrafic()
+if (process.client) {
+  useLogTrafic();
+}
 </script>
