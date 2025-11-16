@@ -135,6 +135,8 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 const config = useRuntimeConfig()
 const siteUrl = config.public.siteUrl
 
+console.log(siteUrl)
+
 const mobileOpen = ref(false)
 function closeMobile() {
   mobileOpen.value = false
