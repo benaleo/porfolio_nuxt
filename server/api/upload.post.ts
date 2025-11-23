@@ -2,6 +2,10 @@ import { readMultipartFormData, sendError } from 'h3'
 import { extname } from 'node:path'
 import { uploadBufferToR2, r2PublicUrl } from '../utils/r2'
 
+// Ensure this route runs on the Node runtime (not Edge),
+// so Node APIs used by dependencies are available.
+export const runtime = 'node'
+
 export default defineEventHandler(async (event) => {
   const form = await readMultipartFormData(event)
   if (!form) throw createError({ statusCode: 400, message: 'multipart/form-data required' })
