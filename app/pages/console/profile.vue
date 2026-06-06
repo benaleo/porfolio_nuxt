@@ -50,7 +50,18 @@
           </div>
           <div class="sm:col-span-2">
             <label class="block text-sm mb-1">Bio</label>
-            <textarea v-model="form.bio" rows="4" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200"></textarea>
+            <ClientOnly>
+              <QuillEditor
+                v-model:content="form.bio"
+                content-type="html"
+                theme="snow"
+                :options="quillOptions"
+                class="rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+              />
+              <template #fallback>
+                <textarea v-model="form.bio" rows="4" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" />
+              </template>
+            </ClientOnly>
           </div>
         </div>
 
@@ -83,14 +94,26 @@
 </template>
 
 <script setup lang="ts">
+import { QuillEditor } from '@vueup/vue-quill'
 import admin from '../../../middleware/admin'
 
 definePageMeta({ layout: 'console', middleware: [admin] })
 
+const quillOptions = {
+  modules: {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link'],
+      ['clean'],
+    ],
+  },
+}
+
 type Profile = {
   name: string
   avatar: string | null
-  bio: string | null
+  bio: string
   tagline: string | null
   contactNumber: string | null
   github: string | null
@@ -106,7 +129,7 @@ const { data: initial } = await useAsyncData('profile', () => $fetch<Profile | n
 const form = reactive<Profile>({
   name: initial.value?.name || '',
   avatar: initial.value?.avatar || null,
-  bio: initial.value?.bio || null,
+  bio: initial.value?.bio || '',
   tagline: initial.value?.tagline || null,
   contactNumber: initial.value?.contactNumber || null,
   github: initial.value?.github || null,
