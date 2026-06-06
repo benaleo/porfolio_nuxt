@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client/edge'
+import pkg from '@prisma/client/edge'
+const { PrismaClient } = pkg as any
 import { withAccelerate } from '@prisma/extension-accelerate'
 
 // Use Edge client with Accelerate so it runs on Cloudflare Workers.

@@ -7,11 +7,22 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css", "@vueup/vue-quill/dist/vue-quill.snow.css"],
 
   routeRules: {
+    // Cache uploads for 1 year
     "/uploads/**": {
       headers: {
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     },
+    // Security headers for all routes
+    '/*': {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'X-XSS-Protection': '1; mode=block',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Content-Security-Policy': "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:;"
+      }
+    }
   },
 
   app: {
@@ -35,31 +46,34 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Server-only config (not exposed to client)
+    secret: process.env.APP_SECRET || 'default-secret-key',
     auth: {
       adminUsername: process.env.ADMIN_USERNAME,
       adminPassword: process.env.ADMIN_PASSWORD,
-      jwtSecret: process.env.JWT_SECRET,
+      jwtSecret: process.env.JWT_SECRET || 'default-jwt-secret',
     },
     contact: {
-      // e.g. https://formspree.io/f/xxxxxx
       formspreeEndpoint: process.env.FORMSPREE_ENDPOINT || "",
     },
+    // Public config (exposed to client)
     public: {
       siteName: "Beno – Fullstack Developer",
       siteDescription: "Fullstack Developer | Spring Boot • Golang • Vue/Nuxt",
-      siteUrl: process.env.SITE_URL || "http://localhost:3000",
+      siteUrl: process.env.SITE_URL || "https://benaleo-dev.cloud/",
       social: {
         github: "https://github.com/your-github",
         linkedin: "https://www.linkedin.com/in/your-linkedin",
         email: "mailto:benaleo.projects@gmail.com",
       },
-      secret: process.env.APP_LOCK || "Kmzway87aa",
+      // No sensitive data here
     },
   },
+  
 
   vite: {
     plugins: [tailwindcss()],
   },
 
-  modules: ["@nuxthub/core"],
+  modules: [],
 });

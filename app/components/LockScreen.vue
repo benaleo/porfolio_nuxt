@@ -39,7 +39,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 
-const config = useRuntimeConfig();
 const emit = defineEmits(['unlocked']);
 
 const password = ref('');
@@ -49,6 +48,10 @@ const maxAttempts = 3;
 const lockDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
 const unlockTime = ref(0);
 const timer = ref<NodeJS.Timeout | null>(null);
+
+onMounted(() => {
+  checkLocalStorage();
+});
 
 const isLocked = computed(() => {
   return Date.now() < unlockTime.value;
@@ -87,20 +90,35 @@ const startTimer = () => {
   }, 1000);
 };
 
-const unlock = () => {
+const unlock = async () => {
   if (isLocked.value) return;
-  
-  if (password.value === config.public.secret) {
-    // Correct password
+  error.value = '';
+
+  try {
+    const { data, error: fetchError } = await useFetch<{ ok: boolean; message?: string }>(
+      '/api/auth/verify',
+      { method: 'POST', body: { password: password.value } }
+    );
+
+    if (fetchError.value || !data.value?.ok) {
+      attempts.value++;
+      error.value = data.value?.message || fetchError.value?.message || 'Incorrect password. Please try again.';
+
+      if (attempts.value >= maxAttempts) {
+        unlockTime.value = Date.now() + lockDuration;
+        localStorage.setItem('appLock', JSON.stringify({ unlockTime: unlockTime.value }));
+        startTimer();
+      }
+      return;
+    }
+
     localStorage.removeItem('appLock');
     emit('unlocked');
-  } else {
-    // Incorrect password
+  } catch (e: any) {
     attempts.value++;
-    error.value = 'Incorrect password. Please try again.';
-    
+    error.value = e?.message || 'An error occurred. Please try again.';
+
     if (attempts.value >= maxAttempts) {
-      // Lock for 10 minutes
       unlockTime.value = Date.now() + lockDuration;
       localStorage.setItem('appLock', JSON.stringify({ unlockTime: unlockTime.value }));
       startTimer();
@@ -108,9 +126,6 @@ const unlock = () => {
   }
 };
 
-onMounted(() => {
-  checkLocalStorage();
-});
 
 onUnmounted(() => {
   if (timer.value) {
