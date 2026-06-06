@@ -62,30 +62,31 @@
                   >&lt;/&gt;</button>
                 </div>
                 <!-- Rich text editor -->
-                <QuillEditor
-                  v-show="!bioHtmlMode"
-                  v-model:content="form.bio"
-                  content-type="html"
-                  theme="snow"
-                  toolbar="#bio-toolbar"
-                >
-                  <template #toolbar>
-                    <div id="bio-toolbar">
-                      <span class="ql-formats">
-                        <button class="ql-bold" /><button class="ql-italic" /><button class="ql-underline" />
-                      </span>
-                      <span class="ql-formats">
-                        <button class="ql-list" value="ordered" /><button class="ql-list" value="bullet" />
-                      </span>
-                      <span class="ql-formats">
-                        <button class="ql-link" />
-                      </span>
-                      <span class="ql-formats">
-                        <button class="ql-clean" />
-                      </span>
-                    </div>
-                  </template>
-                </QuillEditor>
+                <div v-show="!bioHtmlMode">
+                  <QuillEditor
+                    v-model:content="form.bio"
+                    content-type="html"
+                    theme="snow"
+                    toolbar="#bio-toolbar"
+                  >
+                    <template #toolbar>
+                      <div id="bio-toolbar">
+                        <span class="ql-formats">
+                          <button class="ql-bold" /><button class="ql-italic" /><button class="ql-underline" />
+                        </span>
+                        <span class="ql-formats">
+                          <button class="ql-list" value="ordered" /><button class="ql-list" value="bullet" />
+                        </span>
+                        <span class="ql-formats">
+                          <button class="ql-link" />
+                        </span>
+                        <span class="ql-formats">
+                          <button class="ql-clean" />
+                        </span>
+                      </div>
+                    </template>
+                  </QuillEditor>
+                </div>
                 <!-- HTML source textarea -->
                 <textarea
                   v-show="bioHtmlMode"
