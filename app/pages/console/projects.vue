@@ -198,8 +198,12 @@
 </template>
 
 <script setup lang="ts">
+import { defineAsyncComponent } from "vue";
 import admin from "../../../middleware/admin";
-import { QuillEditor } from "@vueup/vue-quill";
+
+const QuillEditor = defineAsyncComponent(() =>
+  import("@vueup/vue-quill").then((m) => m.QuillEditor)
+);
 
 definePageMeta({ layout: "console", middleware: [admin] });
 
