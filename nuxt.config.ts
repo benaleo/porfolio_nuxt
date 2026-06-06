@@ -75,5 +75,5 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
 
-  modules: ["@nuxthub/core"],
+  modules: [],
 });
