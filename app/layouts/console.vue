@@ -81,7 +81,8 @@
 <script setup lang="ts">
 import { ClientOnly } from "#components";
 
-const now = new Date().toLocaleString();
+const now = ref('')
+onMounted(() => { now.value = new Date().toLocaleString() })
 const logout = async () => {
   try {
     await $fetch("/api/auth/logout", {

@@ -50,55 +50,51 @@
           </div>
           <div class="sm:col-span-2">
             <label class="block text-sm mb-1">Bio</label>
-            <ClientOnly>
-              <div class="rounded border border-slate-300 dark:border-slate-700 overflow-hidden">
-                <!-- Toggle bar -->
-                <div class="flex justify-end px-2 py-1 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-                  <button
-                    type="button"
-                    title="Toggle HTML source"
-                    :class="['text-xs px-2 py-0.5 rounded font-mono transition', bioHtmlMode ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300']"
-                    @click="bioHtmlMode = !bioHtmlMode"
-                  >&lt;/&gt;</button>
-                </div>
-                <!-- Rich text editor -->
-                <div v-show="!bioHtmlMode">
-                  <QuillEditor
-                    v-model:content="form.bio"
-                    content-type="html"
-                    theme="snow"
-                    toolbar="#bio-toolbar"
-                  >
-                    <template #toolbar>
-                      <div id="bio-toolbar">
-                        <span class="ql-formats">
-                          <button class="ql-bold" /><button class="ql-italic" /><button class="ql-underline" />
-                        </span>
-                        <span class="ql-formats">
-                          <button class="ql-list" value="ordered" /><button class="ql-list" value="bullet" />
-                        </span>
-                        <span class="ql-formats">
-                          <button class="ql-link" />
-                        </span>
-                        <span class="ql-formats">
-                          <button class="ql-clean" />
-                        </span>
-                      </div>
-                    </template>
-                  </QuillEditor>
-                </div>
-                <!-- HTML source textarea -->
-                <textarea
-                  v-show="bioHtmlMode"
-                  v-model="form.bio"
-                  rows="8"
-                  class="w-full px-3 py-2 font-mono text-sm bg-white dark:bg-slate-900 outline-none resize-y"
-                />
+            <div v-if="isMounted" class="rounded border border-slate-300 dark:border-slate-700 overflow-hidden">
+              <!-- Toggle bar -->
+              <div class="flex justify-end px-2 py-1 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                <button
+                  type="button"
+                  title="Toggle HTML source"
+                  :class="['text-xs px-2 py-0.5 rounded font-mono transition', bioHtmlMode ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300']"
+                  @click="bioHtmlMode = !bioHtmlMode"
+                >&lt;/&gt;</button>
               </div>
-              <template #fallback>
-                <textarea v-model="form.bio" rows="4" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" />
-              </template>
-            </ClientOnly>
+              <!-- Rich text editor -->
+              <div v-show="!bioHtmlMode">
+                <QuillEditor
+                  v-model:content="form.bio"
+                  content-type="html"
+                  theme="snow"
+                  toolbar="#bio-toolbar"
+                >
+                  <template #toolbar>
+                    <div id="bio-toolbar">
+                      <span class="ql-formats">
+                        <button class="ql-bold" /><button class="ql-italic" /><button class="ql-underline" />
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-list" value="ordered" /><button class="ql-list" value="bullet" />
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-link" />
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-clean" />
+                      </span>
+                    </div>
+                  </template>
+                </QuillEditor>
+              </div>
+              <!-- HTML source textarea -->
+              <textarea
+                v-show="bioHtmlMode"
+                v-model="form.bio"
+                rows="8"
+                class="w-full px-3 py-2 font-mono text-sm bg-white dark:bg-slate-900 outline-none resize-y"
+              />
+            </div>
+            <textarea v-else v-model="form.bio" rows="4" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" />
           </div>
         </div>
 
@@ -137,6 +133,8 @@ import admin from '../../../middleware/admin'
 definePageMeta({ layout: 'console', middleware: [admin] })
 
 const bioHtmlMode = ref(false)
+const isMounted = ref(false)
+onMounted(() => { isMounted.value = true })
 
 type Profile = {
   name: string
