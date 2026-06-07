@@ -29,12 +29,14 @@ type Post = {
 const route = useRoute()
 const slug = route.params.slug as string
 
-const { data: post, error } = await useAsyncData(`blog-${slug}`, () => $fetch<Post>(`/api/blog/by-slug/${slug}`))
+const { data: post, error } = useAsyncData(`blog-${slug}`, () => $fetch<Post>(`/api/blog/by-slug/${slug}`), { server: false, lazy: true, getCachedData: () => undefined })
 
-if (error.value) {
-  const statusCode = (error.value as any)?.statusCode || 404
-  showError({ statusCode, statusMessage: 'Post not found' })
-}
+watch(error, (e) => {
+  if (e) {
+    const statusCode = (e as any)?.statusCode || 404
+    showError({ statusCode, statusMessage: 'Post not found' })
+  }
+})
 
 const format = (s?: string | null) => (s ? new Date(s).toLocaleDateString() : '')
 

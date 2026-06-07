@@ -52,8 +52,9 @@ type Project = {
 const selected = ref<'All' | string>('All')
 
 type ProjectsResponse = { items: Project[]; total: number; take: number; skip: number }
-const { data: projects } = await useAsyncData('projects-list', () =>
-  $fetch<ProjectsResponse>('/api/projects')
+const { data: projects } = useAsyncData('projects-list', () =>
+  $fetch<ProjectsResponse>('/api/projects'),
+  { server: false, lazy: true, getCachedData: () => undefined },
 )
 
 const categories = computed(() =>

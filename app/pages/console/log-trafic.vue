@@ -85,10 +85,10 @@ const q = ref('')
 const page = ref(1)
 const pageSize = ref(10)
 
-const { data, refresh, error } = await useAsyncData(
+const { data, refresh, error } = useAsyncData(
   () => `log-trafic-${page.value}-${pageSize.value}`,
   () => $fetch<LogTraficApi>('/api/log-trafic', { params: { take: pageSize.value, skip: (page.value - 1) * pageSize.value } }),
-  { watch: [page, pageSize] }
+  { watch: [page, pageSize], server: false, lazy: true, getCachedData: () => undefined }
 )
 
 const items = computed(() => data.value?.items || [])

@@ -44,8 +44,9 @@ type Post = {
   createdAt: string;
 };
 type BlogResponse = { items: Post[]; total: number; take: number; skip: number };
-const { data: posts } = await useAsyncData("blog-list", () =>
-  $fetch<BlogResponse>("/api/blog")
+const { data: posts } = useAsyncData("blog-list", () =>
+  $fetch<BlogResponse>("/api/blog"),
+  { server: false, lazy: true, getCachedData: () => undefined },
 );
 const postItems = computed(() => posts.value?.items || []);
 const format = (s?: string | null) =>

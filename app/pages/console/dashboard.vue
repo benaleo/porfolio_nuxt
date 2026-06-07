@@ -86,9 +86,9 @@ import admin from '../../../middleware/admin'
 definePageMeta({ layout: 'console', middleware: [admin] })
 
 type Stats = { blog: number; projects: number; education: number; experience: number; hasProfile: boolean }
-const { data: stats } = await useAsyncData('stats', () => $fetch<Stats>('/api/stats', { credentials: 'include' }))
+const { data: stats } = useAsyncData('stats', () => $fetch<Stats>('/api/stats', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
 
 type TopUrl = { url: string; count: number }
-const { data: topToday } = await useAsyncData('top-urls-today', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=today&take=5', { credentials: 'include' }))
-const { data: topMonth } = await useAsyncData('top-urls-month', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=month&take=5', { credentials: 'include' }))
+const { data: topToday } = useAsyncData('top-urls-today', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=today&take=5', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
+const { data: topMonth } = useAsyncData('top-urls-month', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=month&take=5', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
 </script>

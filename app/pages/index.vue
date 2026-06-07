@@ -44,8 +44,9 @@ import type { Profile } from "~/types/profile.types";
 import { useLogTrafic } from "~/composables/useLogTrafic";
 import LockScreen from "~/components/LockScreen.vue";
 
-const { data: profile } = await useAsyncData("profile", () =>
-  $fetch<Profile | null>("/api/profile")
+const { data: profile } = useAsyncData("profile", () =>
+  $fetch<Profile | null>("/api/profile"),
+  { server: false, lazy: true, getCachedData: () => undefined },
 );
 
 const isUnlocked = ref(false);

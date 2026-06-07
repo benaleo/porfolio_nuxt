@@ -29,7 +29,7 @@ type DbExperience = {
 }
 
 type ExperienceResponse = { items: DbExperience[]; total: number; take: number; skip: number }
-const { data: expRaw } = await useAsyncData('experience-list', () => $fetch<ExperienceResponse>('/api/experience'))
+const { data: expRaw } = useAsyncData('experience-list', () => $fetch<ExperienceResponse>('/api/experience'), { server: false, lazy: true, getCachedData: () => undefined })
 
 const experiences = computed(() =>
   (expRaw.value?.items || []).map((x) => ({

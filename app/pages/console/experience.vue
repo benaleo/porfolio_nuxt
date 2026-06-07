@@ -218,13 +218,13 @@ const {
   data,
   refresh,
   error: fetchError,
-} = await useAsyncData(
+} = useAsyncData(
   () => `experience-list-${page.value}-${pageSize.value}`,
   () =>
     $fetch<ExperienceApi>("/api/experience", {
       params: { take: pageSize.value, skip: (page.value - 1) * pageSize.value },
     }),
-  { watch: [page, pageSize] }
+  { watch: [page, pageSize], server: false, lazy: true, getCachedData: () => undefined }
 );
 
 const items = computed(() => data.value?.items || []);

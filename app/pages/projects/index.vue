@@ -66,8 +66,9 @@ const route = useRoute()
 const selected = ref<'All' | string>((route.query.category as string) || 'All')
 const q = ref('')
 
-const { data: projects } = await useAsyncData('projects-page', () =>
-  $fetch<ProjectsResponse>('/api/projects', { params: { take: 500 } })
+const { data: projects } = useAsyncData('projects-page', () =>
+  $fetch<ProjectsResponse>('/api/projects', { params: { take: 500 } }),
+  { server: false, lazy: true, getCachedData: () => undefined },
 )
 
 const categories = computed(() =>

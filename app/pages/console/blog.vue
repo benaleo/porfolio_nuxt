@@ -231,13 +231,13 @@ const {
   data,
   refresh,
   error: fetchError,
-} = await useAsyncData(
+} = useAsyncData(
   () => `blog-list-${page.value}-${pageSize.value}`,
   () =>
     $fetch<PostApi>("/api/blog", {
       params: { take: pageSize.value, skip: (page.value - 1) * pageSize.value },
     }),
-  { watch: [page, pageSize] }
+  { watch: [page, pageSize], server: false, lazy: true, getCachedData: () => undefined }
 );
 
 const items = computed(() => data.value?.items || []);

@@ -34,12 +34,14 @@ type Project = {
 const route = useRoute()
 const id = route.params.id as string
 
-const { data: project, error } = await useAsyncData(`project-${id}`, () => $fetch<Project>(`/api/projects/${id}`))
+const { data: project, error } = useAsyncData(`project-${id}`, () => $fetch<Project>(`/api/projects/${id}`), { server: false, lazy: true, getCachedData: () => undefined })
 
-if (error.value) {
-  const statusCode = (error.value as any)?.statusCode || 404
-  showError({ statusCode, statusMessage: 'Project not found' })
-}
+watch(error, (e) => {
+  if (e) {
+    const statusCode = (e as any)?.statusCode || 404
+    showError({ statusCode, statusMessage: 'Project not found' })
+  }
+})
 
 // Log traffic on client mount
 useLogTrafic()

@@ -154,21 +154,25 @@ type Profile = {
   impactOss: number
 }
 
-const { data: initial } = await useAsyncData('profile', () => $fetch<Profile | null>('/api/profile', { credentials: 'include' }))
+const { data: initial } = useAsyncData('profile', () => $fetch<Profile | null>('/api/profile', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
 
 const form = reactive<Profile>({
-  name: initial.value?.name || '',
-  avatar: initial.value?.avatar || null,
-  bio: initial.value?.bio || '',
-  tagline: initial.value?.tagline || null,
-  contactNumber: initial.value?.contactNumber || null,
-  github: initial.value?.github || null,
-  linkedin: initial.value?.linkedin || null,
-  email: initial.value?.email || null,
-  impactYears: initial.value?.impactYears || 0,
-  impactProjects: initial.value?.impactProjects || 0,
-  impactOss: initial.value?.impactOss || 0,
+  name: '',
+  avatar: null,
+  bio: '',
+  tagline: null,
+  contactNumber: null,
+  github: null,
+  linkedin: null,
+  email: null,
+  impactYears: 0,
+  impactProjects: 0,
+  impactOss: 0,
 })
+
+watch(initial, (val) => {
+  if (val) Object.assign(form, val)
+}, { immediate: true })
 
 const saving = ref(false)
 const saved = ref(false)
