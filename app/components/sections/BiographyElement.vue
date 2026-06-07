@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 bg-slate-950/80 backdrop-blur-md"
+    class="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 bg-black/60 backdrop-blur-xl supports-[backdrop-filter]:bg-black/40"
     @click.self="$emit('close')"
   >
     <div
