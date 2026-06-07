@@ -4,7 +4,7 @@
     @click.self="$emit('close')"
   >
     <div
-      class="relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/95 to-slate-800/95 shadow-2xl shadow-blue-500/10 overflow-hidden"
+      class="relative w-full max-w-[min(1000px,90vw)] max-h-[90vh] flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/95 to-slate-800/95 shadow-2xl shadow-blue-500/10 overflow-hidden"
     >
       <div
         class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent"
