@@ -25,7 +25,17 @@
         />
       </div>
 
-      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-if="pending" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-for="i in 6" :key="i" class="rounded-xl overflow-hidden border border-slate-700">
+          <Skeleton class="aspect-[16/9] w-full rounded-none" />
+          <div class="p-4 space-y-3">
+            <Skeleton class="h-4 w-3/4" />
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6" />
+          </div>
+        </div>
+      </div>
+      <div v-else class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <ClientOnly>
           <div
             class="rounded-xl card-blue-neon"
@@ -41,7 +51,7 @@
         </ClientOnly>
       </div>
 
-      <div v-if="filtered.length === 0" class="mt-10 text-center text-sm text-slate-400">
+      <div v-if="!pending && filtered.length === 0" class="mt-10 text-center text-sm text-slate-400">
         No projects found.
       </div>
     </div>
@@ -66,7 +76,7 @@ const route = useRoute()
 const selected = ref<'All' | string>((route.query.category as string) || 'All')
 const q = ref('')
 
-const { data: projects } = useAsyncData('projects-page', () =>
+const { data: projects, pending } = useAsyncData('projects-page', () =>
   $fetch<ProjectsResponse>('/api/projects', { params: { take: 500 } }),
   { server: false, lazy: true, getCachedData: () => undefined },
 )

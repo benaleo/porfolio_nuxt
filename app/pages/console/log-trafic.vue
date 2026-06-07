@@ -24,18 +24,31 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, i) in paged" :key="row.id" class="border-t border-slate-200 dark:border-slate-800">
-            <td class="px-4 py-3">{{ skip + i + 1 }}</td>
-            <td class="px-4 py-3">{{ format(row.createdAt) }}</td>
-            <td class="px-4 py-3">{{ row.browser }}</td>
-            <td class="px-4 py-3">{{ row.os }}</td>
-            <td class="px-4 py-3">{{ row.country || '-' }}</td>
-            <td class="px-4 py-3">{{ row.ip || '-' }}</td>
-            <td class="px-4 py-3 break-all"><a :href="row.url" target="_blank" rel="noopener" class="text-blue-600 hover:underline">{{ row.url }}</a></td>
-          </tr>
-          <tr v-if="!paged.length">
-            <td class="px-4 py-8 text-center text-slate-500" colspan="7">No data</td>
-          </tr>
+          <template v-if="pending">
+            <tr v-for="i in pageSize" :key="i" class="border-t border-slate-200 dark:border-slate-800">
+              <td class="px-4 py-3"><Skeleton class="h-3 w-4" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-28" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-16" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-16" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-20" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-24" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-full" /></td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr v-for="(row, i) in paged" :key="row.id" class="border-t border-slate-200 dark:border-slate-800">
+              <td class="px-4 py-3">{{ skip + i + 1 }}</td>
+              <td class="px-4 py-3">{{ format(row.createdAt) }}</td>
+              <td class="px-4 py-3">{{ row.browser }}</td>
+              <td class="px-4 py-3">{{ row.os }}</td>
+              <td class="px-4 py-3">{{ row.country || '-' }}</td>
+              <td class="px-4 py-3">{{ row.ip || '-' }}</td>
+              <td class="px-4 py-3 break-all"><a :href="row.url" target="_blank" rel="noopener" class="text-blue-600 hover:underline">{{ row.url }}</a></td>
+            </tr>
+            <tr v-if="!paged.length">
+              <td class="px-4 py-8 text-center text-slate-500" colspan="7">No data</td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -85,7 +98,7 @@ const q = ref('')
 const page = ref(1)
 const pageSize = ref(10)
 
-const { data, refresh, error } = useAsyncData(
+const { data, refresh, error, pending } = useAsyncData(
   () => `log-trafic-${page.value}-${pageSize.value}`,
   () => $fetch<LogTraficApi>('/api/log-trafic', { params: { take: pageSize.value, skip: (page.value - 1) * pageSize.value } }),
   { watch: [page, pageSize], server: false, lazy: true, getCachedData: () => undefined }

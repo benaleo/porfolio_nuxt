@@ -6,31 +6,39 @@
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
-        <div class="text-sm text-slate-500">Blog Posts</div>
-        <div class="mt-1 text-3xl font-bold">{{ stats?.blog ?? 0 }}</div>
-      </div>
-      <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
-        <div class="text-sm text-slate-500">Projects</div>
-        <div class="mt-1 text-3xl font-bold">{{ stats?.projects ?? 0 }}</div>
-      </div>
-      <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
-        <div class="text-sm text-slate-500">Education</div>
-        <div class="mt-1 text-3xl font-bold">{{ stats?.education ?? 0 }}</div>
-      </div>
-      <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
-        <div class="text-sm text-slate-500">Experience</div>
-        <div class="mt-1 text-3xl font-bold">{{ stats?.experience ?? 0 }}</div>
-      </div>
-      <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80 sm:col-span-2 lg:col-span-1">
-        <div class="text-sm text-slate-500">Profile</div>
-        <div class="mt-1 text-base">
-          <span class="inline-flex items-center gap-2 px-2 py-1 rounded-full" :class="stats?.hasProfile ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300' : 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300'">
-            <span class="size-2 rounded-full" :class="stats?.hasProfile ? 'bg-green-500' : 'bg-yellow-500'" />
-            {{ stats?.hasProfile ? 'Completed' : 'Not set' }}
-          </span>
+      <template v-if="statsPending">
+        <div v-for="i in 5" :key="i" class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80 space-y-2">
+          <Skeleton class="h-3 w-20" />
+          <Skeleton class="h-8 w-16" />
         </div>
-      </div>
+      </template>
+      <template v-else>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
+          <div class="text-sm text-slate-500">Blog Posts</div>
+          <div class="mt-1 text-3xl font-bold">{{ stats?.blog ?? 0 }}</div>
+        </div>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
+          <div class="text-sm text-slate-500">Projects</div>
+          <div class="mt-1 text-3xl font-bold">{{ stats?.projects ?? 0 }}</div>
+        </div>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
+          <div class="text-sm text-slate-500">Education</div>
+          <div class="mt-1 text-3xl font-bold">{{ stats?.education ?? 0 }}</div>
+        </div>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
+          <div class="text-sm text-slate-500">Experience</div>
+          <div class="mt-1 text-3xl font-bold">{{ stats?.experience ?? 0 }}</div>
+        </div>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80 sm:col-span-2 lg:col-span-1">
+          <div class="text-sm text-slate-500">Profile</div>
+          <div class="mt-1 text-base">
+            <span class="inline-flex items-center gap-2 px-2 py-1 rounded-full" :class="stats?.hasProfile ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300' : 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300'">
+              <span class="size-2 rounded-full" :class="stats?.hasProfile ? 'bg-green-500' : 'bg-yellow-500'" />
+              {{ stats?.hasProfile ? 'Completed' : 'Not set' }}
+            </span>
+          </div>
+        </div>
+      </template>
     </div>
 
     <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white/80 dark:bg-slate-900/80">
@@ -51,7 +59,16 @@
         <!-- Left: Today -->
         <div>
           <div class="text-xs uppercase tracking-wide text-slate-500 mb-2">Hari ini</div>
-          <ol class="space-y-2">
+          <ol v-if="todayPending" class="space-y-2">
+            <li v-for="i in 5" :key="i" class="flex items-start gap-2">
+              <Skeleton class="h-4 w-4" />
+              <div class="flex-1 space-y-1">
+                <Skeleton class="h-3 w-3/4" />
+                <Skeleton class="h-2.5 w-20" />
+              </div>
+            </li>
+          </ol>
+          <ol v-else class="space-y-2">
             <li v-for="(item, i) in topToday || []" :key="'today-' + i" class="flex items-start gap-2">
               <span class="inline-flex items-center justify-center w-6 shrink-0 text-xs font-semibold text-slate-500">{{ i + 1 }}.</span>
               <div class="min-w-0">
@@ -65,7 +82,16 @@
         <!-- Right: This Month -->
         <div>
           <div class="text-xs uppercase tracking-wide text-slate-500 mb-2">Bulan ini</div>
-          <ol class="space-y-2">
+          <ol v-if="monthPending" class="space-y-2">
+            <li v-for="i in 5" :key="i" class="flex items-start gap-2">
+              <Skeleton class="h-4 w-4" />
+              <div class="flex-1 space-y-1">
+                <Skeleton class="h-3 w-3/4" />
+                <Skeleton class="h-2.5 w-20" />
+              </div>
+            </li>
+          </ol>
+          <ol v-else class="space-y-2">
             <li v-for="(item, i) in topMonth || []" :key="'month-' + i" class="flex items-start gap-2">
               <span class="inline-flex items-center justify-center w-6 shrink-0 text-xs font-semibold text-slate-500">{{ i + 1 }}.</span>
               <div class="min-w-0">
@@ -86,9 +112,9 @@ import admin from '../../../middleware/admin'
 definePageMeta({ layout: 'console', middleware: [admin] })
 
 type Stats = { blog: number; projects: number; education: number; experience: number; hasProfile: boolean }
-const { data: stats } = useAsyncData('stats', () => $fetch<Stats>('/api/stats', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
+const { data: stats, pending: statsPending } = useAsyncData('stats', () => $fetch<Stats>('/api/stats', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
 
 type TopUrl = { url: string; count: number }
-const { data: topToday } = useAsyncData('top-urls-today', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=today&take=5', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
-const { data: topMonth } = useAsyncData('top-urls-month', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=month&take=5', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
+const { data: topToday, pending: todayPending } = useAsyncData('top-urls-today', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=today&take=5', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
+const { data: topMonth, pending: monthPending } = useAsyncData('top-urls-month', () => $fetch<TopUrl[]>('/api/log-trafic/top?period=month&take=5', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
 </script>

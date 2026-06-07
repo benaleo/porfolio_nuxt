@@ -1,9 +1,19 @@
 <template>
-  <section v-if="experiences.length > 0" class="py-20">
+  <section v-if="pending || experiences.length > 0" class="py-20">
     <div class="mx-auto max-w-6xl px-4">
       <h2 class="text-2xl sm:text-3xl text-white font-bold">Experience</h2>
       <ClientOnly>
-        <div class="mt-8 space-y-6">
+        <div v-if="pending" class="mt-8 space-y-6">
+          <div v-for="i in 2" :key="i" class="card-blue-neon space-y-3">
+            <div class="flex justify-between gap-3">
+              <Skeleton class="h-5 w-1/2" />
+              <Skeleton class="h-4 w-24" />
+            </div>
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6" />
+          </div>
+        </div>
+        <div v-else class="mt-8 space-y-6">
           <div v-for="(x, i) in experiences" :key="i" class="group card-blue-neon" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="font-semibold text-white">{{ x.role }} <span class="text-slate-100">@ {{ x.company }}</span></div>
@@ -29,7 +39,7 @@ type DbExperience = {
 }
 
 type ExperienceResponse = { items: DbExperience[]; total: number; take: number; skip: number }
-const { data: expRaw } = useAsyncData('experience-list', () => $fetch<ExperienceResponse>('/api/experience'), { server: false, lazy: true, getCachedData: () => undefined })
+const { data: expRaw, pending } = useAsyncData('experience-list', () => $fetch<ExperienceResponse>('/api/experience'), { server: false, lazy: true, getCachedData: () => undefined })
 
 const experiences = computed(() =>
   (expRaw.value?.items || []).map((x) => ({

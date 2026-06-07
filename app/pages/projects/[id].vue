@@ -2,7 +2,15 @@
   <ClientOnly>
   <div class="mx-auto max-w-3xl px-4 py-16">
     <NuxtLink to="/" class="text-sm text-blue-600">← Back to Home</NuxtLink>
-    <div v-if="project" class="mt-4">
+    <div v-if="pending" class="mt-4 space-y-4">
+      <Skeleton class="h-10 w-3/4" />
+      <Skeleton class="h-4 w-24" />
+      <Skeleton class="aspect-[16/9] w-full rounded-xl" />
+      <Skeleton class="h-4 w-full" />
+      <Skeleton class="h-4 w-11/12" />
+      <Skeleton class="h-4 w-5/6" />
+    </div>
+    <div v-else-if="project" class="mt-4">
       <h1 class="text-3xl font-bold text-slate-100">{{ project?.title }}</h1>
       <div class="mt-2 text-sm text-slate-200" v-if="project?.category">{{ project?.category }}</div>
       <div class="mt-6 aspect-[16/9] bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden">
@@ -34,7 +42,7 @@ type Project = {
 const route = useRoute()
 const id = route.params.id as string
 
-const { data: project, error } = useAsyncData(`project-${id}`, () => $fetch<Project>(`/api/projects/${id}`), { server: false, lazy: true, getCachedData: () => undefined })
+const { data: project, error, pending } = useAsyncData(`project-${id}`, () => $fetch<Project>(`/api/projects/${id}`), { server: false, lazy: true, getCachedData: () => undefined })
 
 watch(error, (e) => {
   if (e) {

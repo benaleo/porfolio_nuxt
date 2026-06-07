@@ -2,9 +2,20 @@
   <div class="mx-auto max-w-3xl px-4 py-16">
     <NuxtLink to="/" class="text-sm text-blue-600">← Back to Home</NuxtLink>
     <div class="mx-auto max-w-3xl px-4">
-      <article v-if="post" class="mt-4">
+      <div v-if="pending" class="mt-4 space-y-4">
+        <Skeleton class="h-4 w-32" />
+        <Skeleton class="h-10 w-3/4" />
+        <Skeleton class="h-56 w-full" />
+        <Skeleton class="h-4 w-full" />
+        <Skeleton class="h-4 w-11/12" />
+        <Skeleton class="h-4 w-5/6" />
+      </div>
+      <article v-else-if="post" class="mt-4">
         <div class="text-sm text-slate-100">{{ format(post.publishedAt || post.createdAt) }}</div>
         <h1 class="text-3xl font-bold text-white">{{ post.title }}</h1>
+        <div v-if="post.thumbnail" class="mt-6 aspect-[16/9] bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden">
+          <img :src="post.thumbnail" :alt="post.title" class="w-full h-full object-cover" />
+        </div>
         <p class="mt-4 text-slate-100 whitespace-pre-line prose prose-slate" v-html="post.content"></p>
       </article>
     </div>
@@ -29,7 +40,7 @@ type Post = {
 const route = useRoute()
 const slug = route.params.slug as string
 
-const { data: post, error } = useAsyncData(`blog-${slug}`, () => $fetch<Post>(`/api/blog/by-slug/${slug}`), { server: false, lazy: true, getCachedData: () => undefined })
+const { data: post, error, pending } = useAsyncData(`blog-${slug}`, () => $fetch<Post>(`/api/blog/by-slug/${slug}`), { server: false, lazy: true, getCachedData: () => undefined })
 
 watch(error, (e) => {
   if (e) {

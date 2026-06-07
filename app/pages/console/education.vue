@@ -96,39 +96,50 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="e in items"
-              :key="e.id"
-              class="border-b border-slate-200/70 dark:border-slate-800"
-            >
-              <td class="px-4 py-2 font-medium">{{ e.year }}</td>
-              <td class="px-4 py-2">{{ e.institution }}</td>
-              <td class="px-4 py-2 text-slate-500">{{ e.major }}</td>
-              <td class="px-4 py-2 text-slate-500">
-                {{ format(e.createdAt) }}
-              </td>
-              <td class="px-4 py-2">
-                <div class="flex items-center gap-2">
-                  <button
-                    class="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
-                    @click="startEdit(e)"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    class="px-2 py-1 rounded border border-red-300 text-red-700 hover:bg-red-50"
-                    @click="onDelete(e)"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="(items || []).length === 0">
-              <td colspan="5" class="px-4 py-6 text-center text-slate-500">
-                No education records yet
-              </td>
-            </tr>
+            <template v-if="pending">
+              <tr v-for="i in pageSize" :key="i" class="border-b border-slate-200/70 dark:border-slate-800">
+                <td class="px-4 py-2"><Skeleton class="h-3 w-16" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-1/2" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-32" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-24" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-20" /></td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr
+                v-for="e in items"
+                :key="e.id"
+                class="border-b border-slate-200/70 dark:border-slate-800"
+              >
+                <td class="px-4 py-2 font-medium">{{ e.year }}</td>
+                <td class="px-4 py-2">{{ e.institution }}</td>
+                <td class="px-4 py-2 text-slate-500">{{ e.major }}</td>
+                <td class="px-4 py-2 text-slate-500">
+                  {{ format(e.createdAt) }}
+                </td>
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2">
+                    <button
+                      class="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      @click="startEdit(e)"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      class="px-2 py-1 rounded border border-red-300 text-red-700 hover:bg-red-50"
+                      @click="onDelete(e)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="(items || []).length === 0">
+                <td colspan="5" class="px-4 py-6 text-center text-slate-500">
+                  No education records yet
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
         <!-- Pagination -->
@@ -194,6 +205,7 @@ const {
   data,
   refresh,
   error: fetchError,
+  pending,
 } = useAsyncData(
   () => `education-list-${page.value}-${pageSize.value}`,
   () =>
