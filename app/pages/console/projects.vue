@@ -124,6 +124,7 @@
               <th class="px-4 py-2">Title</th>
               <th class="px-4 py-2">Category</th>
               <th class="px-4 py-2">Tags</th>
+              <th class="px-4 py-2">Highlighted</th>
               <th class="px-4 py-2">Created</th>
               <th class="px-4 py-2">Actions</th>
             </tr>
@@ -134,6 +135,7 @@
                 <td class="px-4 py-2"><Skeleton class="h-3 w-3/4" /></td>
                 <td class="px-4 py-2"><Skeleton class="h-3 w-20" /></td>
                 <td class="px-4 py-2"><Skeleton class="h-3 w-32" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-16" /></td>
                 <td class="px-4 py-2"><Skeleton class="h-3 w-24" /></td>
                 <td class="px-4 py-2"><Skeleton class="h-3 w-20" /></td>
               </tr>
@@ -148,6 +150,18 @@
                 <td class="px-4 py-2 text-slate-500">{{ p.category }}</td>
                 <td class="px-4 py-2 text-slate-500">
                   {{ (p.tags || []).join(", ") }}
+                </td>
+                <td class="px-4 py-2">
+                  <span
+                    v-if="p.highlight"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-xs font-semibold text-slate-900"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-3">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"/>
+                    </svg>
+                    Yes
+                  </span>
+                  <span v-else class="text-slate-400 text-xs">—</span>
                 </td>
                 <td class="px-4 py-2 text-slate-500">
                   {{ format(p.createdAt) }}
@@ -170,7 +184,7 @@
                 </td>
               </tr>
               <tr v-if="(items || []).length === 0">
-                <td colspan="5" class="px-4 py-6 text-center text-slate-500">
+                <td colspan="6" class="px-4 py-6 text-center text-slate-500">
                   No projects yet
                 </td>
               </tr>
