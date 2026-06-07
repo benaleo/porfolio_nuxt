@@ -74,7 +74,8 @@ const categories = computed(() =>
 
 const filtered = computed(() => {
   const list = projects.value?.items || []
-  return selected.value === 'All' ? list : list.filter((p) => p.category === selected.value)
+  const scoped = selected.value === 'All' ? [...list] : list.filter((p) => p.category === selected.value)
+  return scoped.sort((a, b) => Number(b.highlight ?? false) - Number(a.highlight ?? false))
 })
 
 // Responsive Load More logic
