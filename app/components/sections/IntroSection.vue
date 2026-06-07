@@ -11,7 +11,9 @@
           <div
             class="mx-auto size-32 sm:size-50 rounded-full p-[2px] bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-500"
           >
+            <Skeleton v-if="props.pending" class="size-full rounded-full" />
             <img
+              v-else
               :src="props.avatar || ''"
               alt="avatar"
               class="size-full rounded-full object-cover"
@@ -125,7 +127,7 @@
 import type { Profile } from "~/types/profile.types";
 import BiographyElement from "./BiographyElement.vue";
 
-const props = defineProps<Partial<Profile>>();
+const props = defineProps<Partial<Profile> & { pending?: boolean }>();
 const showBiography = ref(false);
 
 const closeBiography = () => {

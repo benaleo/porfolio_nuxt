@@ -12,6 +12,7 @@
         :github="profile?.github"
         :linkedin="profile?.linkedin"
         :email="profile?.email"
+        :pending="profilePending"
       />
     </section>
     <section id="projects"><ProjectsSection /></section>
@@ -44,7 +45,7 @@ import type { Profile } from "~/types/profile.types";
 import { useLogTrafic } from "~/composables/useLogTrafic";
 import LockScreen from "~/components/LockScreen.vue";
 
-const { data: profile } = useAsyncData("profile", () =>
+const { data: profile, pending: profilePending } = useAsyncData("profile", () =>
   $fetch<Profile | null>("/api/profile"),
   { server: false, lazy: true, getCachedData: () => undefined },
 );
