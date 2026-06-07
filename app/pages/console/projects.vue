@@ -87,6 +87,10 @@
               placeholder="e.g. vue, nuxt, golang"
             />
           </div>
+          <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input v-model="form.highlight" type="checkbox" class="size-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+            <span class="text-sm">Highlight this project</span>
+          </label>
           <div class="flex items-center gap-2 pt-2">
             <button
               :disabled="saving"
@@ -225,6 +229,7 @@ type Project = {
   category: "Backend" | "Frontend" | "Fullstack" | "Other";
   image?: string | null;
   tags?: string[];
+  highlight?: boolean;
   createdAt: string;
 };
 
@@ -281,7 +286,8 @@ const form = reactive<{
   category: Project["category"];
   image?: string | null;
   tags?: string[];
-}>({ title: "", description: "", category: "Backend", image: null, tags: [] });
+  highlight: boolean;
+}>({ title: "", description: "", category: "Backend", image: null, tags: [], highlight: false });
 const tagsInput = ref("");
 
 const startCreate = () => {
@@ -293,6 +299,7 @@ const startCreate = () => {
     category: "Backend",
     image: null,
     tags: [],
+    highlight: false,
   });
   tagsInput.value = "";
 };
@@ -306,6 +313,7 @@ const startEdit = (p: Project) => {
     category: p.category,
     image: p.image || null,
     tags: p.tags || [],
+    highlight: (p as any).highlight ?? false,
   });
   tagsInput.value = (p.tags || []).join(", ");
 };

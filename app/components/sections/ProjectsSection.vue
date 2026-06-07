@@ -57,6 +57,7 @@ type Project = {
   category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other' | string
   image?: string | null
   tags?: string[]
+  highlight?: boolean
 }
 
 const selected = ref<'All' | string>('All')
@@ -116,6 +117,16 @@ onMounted(() => {
   // @ts-ignore
   mq.addListener && mq.addListener(apply)
 })
+
+// Initialize visibleCount once data arrives from the lazy fetch
+watch(
+  () => filtered.value.length,
+  (len) => {
+    if (visibleCount.value === 0 && len > 0) {
+      visibleCount.value = Math.min(baseChunk(), len)
+    }
+  },
+)
 
 onBeforeUnmount(() => {
   const mq = window.matchMedia('(min-width: 1024px)')

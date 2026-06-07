@@ -68,6 +68,7 @@ type Project = {
   category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other' | string
   image?: string | null
   tags?: string[]
+  highlight?: boolean
 }
 
 type ProjectsResponse = { items: Project[]; total: number; take: number; skip: number }

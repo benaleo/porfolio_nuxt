@@ -7,7 +7,7 @@ import { uploadBufferToR2 } from '../../utils/r2'
 export default defineEventHandler(async (event) => {
   await requireAuth(event)
   const contentType = getHeader(event, 'content-type') || ''
-  let payload: { title: string; description: string; category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other'; image?: string | null; tags?: string[] }
+  let payload: { title: string; description: string; category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other'; image?: string | null; tags?: string[]; highlight?: boolean }
 
   if (contentType.includes('multipart/form-data')) {
     const form = await readMultipartFormData(event)
@@ -34,9 +34,11 @@ export default defineEventHandler(async (event) => {
       image = await uploadBufferToR2({ key, buffer, contentType })
     }
 
-    payload = { title, description, category, image: image ?? null, tags }
+    const highlightRaw = getField('highlight')
+    const highlight = highlightRaw === 'true' || highlightRaw === '1' || highlightRaw === 'on'
+    payload = { title, description, category, image: image ?? null, tags, highlight }
   } else {
-    const body = await readBody<{ title: string; description: string; category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other'; image?: string | null; tags?: string[] }>(event)
+    const body = await readBody<{ title: string; description: string; category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other'; image?: string | null; tags?: string[]; highlight?: boolean }>(event)
     if (!body?.title || !body?.description || !body?.category) throw createError({ statusCode: 400, message: 'Missing fields' })
     payload = body
   }
@@ -49,6 +51,7 @@ export default defineEventHandler(async (event) => {
         category: payload.category as any,
         image: payload.image || null,
         tags: payload.tags || [],
+        highlight: payload.highlight ?? false,
       },
     })
     return proj
