@@ -98,10 +98,30 @@ const { data: profile, pending: profilePending } = useAsyncData("profile", () =>
 
 const isUnlocked = ref(false);
 const revealDone = ref(false);
+const route = useRoute();
 
-onMounted(() => {
+onMounted(async () => {
   const sessionUnlocked = sessionStorage.getItem('appUnlocked');
-  isUnlocked.value = sessionUnlocked === 'true';
+  if (sessionUnlocked === 'true') {
+    isUnlocked.value = true;
+    return;
+  }
+
+  const unlockParam = route.query.unlock as string | undefined;
+  if (unlockParam) {
+    try {
+      const res = await $fetch<{ valid: boolean }>('/api/unlock', {
+        method: 'POST',
+        body: { token: unlockParam },
+      });
+      if (res.valid) {
+        isUnlocked.value = true;
+        sessionStorage.setItem('appUnlocked', 'true');
+      }
+    } catch {
+      // invalid token — fall through to lock screen
+    }
+  }
 });
 
 const handleUnlock = () => {
