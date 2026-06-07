@@ -31,6 +31,8 @@
 type DbEducation = { id: number; year: string; institution: string; major: string; summary?: string | null }
 type EducationResponse = { items: DbEducation[]; total: number; take: number; skip: number }
 const { data: eduRaw, pending } = useAsyncData('education-list', () => $fetch<EducationResponse>('/api/education'), { server: false, lazy: true, getCachedData: () => undefined })
-// Map DB fields to UI shape expected by the template
 const education = computed(() => (eduRaw.value?.items || []).map((e) => ({ year: e.year, university: e.institution, major: e.major })))
+
+const { setVisible } = useNavVisibility()
+watch(pending, (isPending) => { if (!isPending) setVisible('education', education.value.length > 0) })
 </script>
