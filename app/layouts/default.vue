@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-dvh flex flex-col overflow-x-hidden relative">
+    <RocketCursor />
     <ClientOnly>
       <GalaxyBackground />
     </ClientOnly>
