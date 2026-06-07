@@ -41,6 +41,9 @@ type DbExperience = {
 type ExperienceResponse = { items: DbExperience[]; total: number; take: number; skip: number }
 const { data: expRaw, pending } = useAsyncData('experience-list', () => $fetch<ExperienceResponse>('/api/experience'), { server: false, lazy: true, getCachedData: () => undefined })
 
+const { setVisible } = useNavVisibility()
+watch(pending, (isPending) => { if (!isPending) setVisible('experience', experiences.value.length > 0) })
+
 const experiences = computed(() =>
   (expRaw.value?.items || []).map((x) => ({
     role: x.position,

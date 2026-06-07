@@ -68,6 +68,9 @@ const { data: projects, pending } = useAsyncData('projects-list', () =>
   { server: false, lazy: true, getCachedData: () => undefined },
 )
 
+const { setVisible } = useNavVisibility()
+watch(pending, (isPending) => { if (!isPending) setVisible('projects', (projects.value?.items || []).length > 0) })
+
 const categories = computed(() =>
   Array.from(new Set((projects.value?.items || []).map((p) => p.category)))
 )

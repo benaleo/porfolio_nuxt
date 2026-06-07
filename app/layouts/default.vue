@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-dvh flex flex-col overflow-x-hidden relative">
+    <RocketCursor />
     <ClientOnly>
       <GalaxyBackground />
     </ClientOnly>
@@ -8,11 +9,11 @@
       <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <a :href="siteUrl" class="font-semibold tracking-tight text-slate-100">Beno</a>
         <div class="hidden md:flex items-center gap-6 text-sm text-slate-100">
-          <a :href="`${siteUrl}#projects`" class="hover:text-blue-600">Projects</a>
-          <a :href="`${siteUrl}#education`" class="hover:text-blue-600">Study</a>
-          <a :href="`${siteUrl}#experience`" class="hover:text-blue-600">Experience</a>
-          <a :href="`${siteUrl}#counters`" class="hover:text-blue-600">Counters</a>
-          <a :href="`${siteUrl}#blog`" class="hover:text-blue-600">Blog</a>
+          <a v-if="navVisible.projects" :href="`${siteUrl}#projects`" class="hover:text-blue-600">Projects</a>
+          <a v-if="navVisible.education" :href="`${siteUrl}#education`" class="hover:text-blue-600">Study</a>
+          <a v-if="navVisible.experience" :href="`${siteUrl}#experience`" class="hover:text-blue-600">Experience</a>
+          <a v-if="navVisible.counters" :href="`${siteUrl}#counters`" class="hover:text-blue-600">Counters</a>
+          <a v-if="navVisible.blog" :href="`${siteUrl}#blog`" class="hover:text-blue-600">Blog</a>
           <a :href="`${siteUrl}#contact`" class="hover:text-blue-600">Contact</a>
         </div>
         <div class="md:hidden flex items-center gap-2">
@@ -65,31 +66,31 @@
             </div>
             <nav class="flex-1 overflow-y-auto px-4 py-6">
               <ul class="space-y-2 text-base">
-                <li>
+                <li v-if="navVisible.projects">
                   <a :href="`${siteUrl}#projects`" class="flex items-center justify-between rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 transition" @click="closeMobile()">
                     <span>Projects</span>
                     <span class="i-lucide-chevron-right size-4 opacity-70" aria-hidden="true"></span>
                   </a>
                 </li>
-                <li>
+                <li v-if="navVisible.education">
                   <a :href="`${siteUrl}#education`" class="flex items-center justify-between rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 transition" @click="closeMobile()">
                     <span>Study</span>
                     <span class="i-lucide-chevron-right size-4 opacity-70" aria-hidden="true"></span>
                   </a>
                 </li>
-                <li>
+                <li v-if="navVisible.experience">
                   <a :href="`${siteUrl}#experience`" class="flex items-center justify-between rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 transition" @click="closeMobile()">
                     <span>Experience</span>
                     <span class="i-lucide-chevron-right size-4 opacity-70" aria-hidden="true"></span>
                   </a>
                 </li>
-                <li>
+                <li v-if="navVisible.counters">
                   <a :href="`${siteUrl}#counters`" class="flex items-center justify-between rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 transition" @click="closeMobile()">
                     <span>Counters</span>
                     <span class="i-lucide-chevron-right size-4 opacity-70" aria-hidden="true"></span>
                   </a>
                 </li>
-                <li>
+                <li v-if="navVisible.blog">
                   <a :href="`${siteUrl}#blog`" class="flex items-center justify-between rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 transition" @click="closeMobile()">
                     <span>Blog</span>
                     <span class="i-lucide-chevron-right size-4 opacity-70" aria-hidden="true"></span>
@@ -134,6 +135,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 const config = useRuntimeConfig()
 const siteUrl = config.public.siteUrl
+const { visible: navVisible } = useNavVisibility()
 
 console.log(siteUrl)
 

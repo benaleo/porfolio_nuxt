@@ -57,6 +57,10 @@ const { data: posts, pending } = useAsyncData("blog-list", () =>
   { server: false, lazy: true, getCachedData: () => undefined },
 );
 const postItems = computed(() => posts.value?.items || []);
+
+const { setVisible } = useNavVisibility()
+watch(pending, (isPending) => { if (!isPending) setVisible('blog', postItems.value.length > 0) })
+
 const format = (s?: string | null) =>
   s ? new Date(s).toLocaleDateString() : "";
 </script>

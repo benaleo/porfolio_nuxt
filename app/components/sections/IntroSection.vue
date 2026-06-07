@@ -2,13 +2,12 @@
   <section class="relative py-36 sm:py-20">
     <div class="mx-auto max-w-5xl px-4">
       <ClientOnly>
-        <div
-          v-motion
-          :initial="{ opacity: 0, y: 20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 500 } }"
-          class="text-center"
-        >
+        <div class="text-center">
+          <!-- Avatar -->
           <div
+            v-motion
+            :initial="{ opacity: 0, scale: 0.5 }"
+            :enter="{ opacity: 1, scale: 1, transition: { duration: 600, ease: 'backOut' } }"
             class="mx-auto size-32 sm:size-50 rounded-full p-[2px] bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-500"
           >
             <Skeleton v-if="props.pending" class="size-full rounded-full" />
@@ -19,33 +18,56 @@
               class="size-full rounded-full object-cover"
             />
           </div>
+
+          <!-- Name -->
           <h1
+            v-motion
+            :initial="{ opacity: 0, y: 32 }"
+            :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 150 } }"
             class="mt-6 text-3xl sm:text-4xl md:text-5xl text-slate-100 font-extrabold tracking-tight"
           >
             {{ props.name }}
           </h1>
-          <p class="mt-3 text-slate-300">
-            {{
-              props.tagline ||
-              "Fullstack Developer | Spring Boot • Golang • Vue/Nuxt"
-            }}
-          </p>
-          <button
-            @click="showBiography = !showBiography"
-            class="mt-6 group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md px-5 py-2.5 text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 hover:border-white/20 transition"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 text-blue-400 group-hover:text-blue-300">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-            </svg>
-            Read Biography
-          </button>
-          <BiographyElement
-            :bio="props.bio || ''"
-            :showBiography="showBiography"
-            @close="closeBiography"
-          />
 
-          <div class="mt-5 flex items-center justify-center gap-4">
+          <!-- Tagline -->
+          <p
+            v-motion
+            :initial="{ opacity: 0, y: 24 }"
+            :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 280 } }"
+            class="mt-3 text-slate-300"
+          >
+            {{ props.tagline || 'Fullstack Developer | Spring Boot • Golang • Vue/Nuxt' }}
+          </p>
+
+          <!-- Bio button -->
+          <div
+            v-motion
+            :initial="{ opacity: 0, y: 20 }"
+            :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 400 } }"
+          >
+            <button
+              @click="showBiography = !showBiography"
+              class="mt-6 group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md px-5 py-2.5 text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 hover:border-white/20 transition"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 text-blue-400 group-hover:text-blue-300">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+              </svg>
+              Read Biography
+            </button>
+            <BiographyElement
+              :bio="props.bio || ''"
+              :showBiography="showBiography"
+              @close="closeBiography"
+            />
+          </div>
+
+          <!-- Social links -->
+          <div
+            v-motion
+            :initial="{ opacity: 0, y: 16 }"
+            :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 520 } }"
+            class="mt-5 flex items-center justify-center gap-4"
+          >
             <a
               v-if="props.github"
               :href="props.github || ''"
@@ -54,15 +76,8 @@
               class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               aria-label="GitHub"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="w-5 h-5"
-              >
-                <path
-                  d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.48v-1.7c-2.78.62-3.37-1.2-3.37-1.2-.45-1.18-1.12-1.5-1.12-1.5-.92-.64.07-.63.07-.63 1.02.07 1.56 1.07 1.56 1.07.9 1.6 2.36 1.14 2.94.87.09-.67.35-1.14.64-1.4-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.3.1-2.7 0 0 .85-.28 2.79 1.05A9.4 9.4 0 0112 6.82c.86 0 1.74.12 2.55.34 1.93-1.33 2.78-1.05 2.78-1.05.56 1.4.21 2.44.1 2.7.64.72 1.03 1.64 1.03 2.76 0 3.94-2.34 4.8-4.57 5.06.36.32.69.95.69 1.92v2.84c0 .27.18.59.69.49A10.02 10.02 0 0022 12.26C22 6.58 17.52 2 12 2z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.48v-1.7c-2.78.62-3.37-1.2-3.37-1.2-.45-1.18-1.12-1.5-1.12-1.5-.92-.64.07-.63.07-.63 1.02.07 1.56 1.07 1.56 1.07.9 1.6 2.36 1.14 2.94.87.09-.67.35-1.14.64-1.4-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.3.1-2.7 0 0 .85-.28 2.79 1.05A9.4 9.4 0 0112 6.82c.86 0 1.74.12 2.55.34 1.93-1.33 2.78-1.05 2.78-1.05.56 1.4.21 2.44.1 2.7.64.72 1.03 1.64 1.03 2.76 0 3.94-2.34 4.8-4.57 5.06.36.32.69.95.69 1.92v2.84c0 .27.18.59.69.49A10.02 10.02 0 0022 12.26C22 6.58 17.52 2 12 2z" />
               </svg>
             </a>
             <a
@@ -73,15 +88,8 @@
               class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               aria-label="LinkedIn"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="w-5 h-5"
-              >
-                <path
-                  d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5C0 2.12 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM8.5 8h3.8v2.2h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6V24h-4v-5.6c0-1.3 0-3-1.9-3s-2.2 1.5-2.2 2.9V24h-4V8z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5C0 2.12 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM8.5 8h3.8v2.2h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6V24h-4v-5.6c0-1.3 0-3-1.9-3s-2.2 1.5-2.2 2.9V24h-4V8z" />
               </svg>
             </a>
             <a
@@ -89,20 +97,19 @@
               class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               aria-label="Email"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="w-5 h-5"
-              >
-                <path
-                  d="M20 4H4a2 2 0 00-2 2v.35l10 6.25L22 6.35V6a2 2 0 00-2-2zm0 4.23l-8 5-8-5V18a2 2 0 002 2h12a2 2 0 002-2V8.23z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path d="M20 4H4a2 2 0 00-2 2v.35l10 6.25L22 6.35V6a2 2 0 00-2-2zm0 4.23l-8 5-8-5V18a2 2 0 002 2h12a2 2 0 002-2V8.23z" />
               </svg>
             </a>
           </div>
 
-          <div class="mt-6 flex items-center justify-center gap-3">
+          <!-- CTA buttons -->
+          <div
+            v-motion
+            :initial="{ opacity: 0, y: 16 }"
+            :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 640 } }"
+            class="mt-6 flex items-center justify-center gap-3"
+          >
             <a
               href="/cv.pdf"
               download
