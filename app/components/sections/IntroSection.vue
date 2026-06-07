@@ -11,7 +11,9 @@
           <div
             class="mx-auto size-32 sm:size-50 rounded-full p-[2px] bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-500"
           >
+            <Skeleton v-if="props.pending" class="size-full rounded-full" />
             <img
+              v-else
               :src="props.avatar || ''"
               alt="avatar"
               class="size-full rounded-full object-cover"
@@ -30,17 +32,18 @@
           </p>
           <button
             @click="showBiography = !showBiography"
-            class="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition"
+            class="mt-6 group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md px-5 py-2.5 text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 hover:border-white/20 transition"
           >
-            Show Biography
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 text-blue-400 group-hover:text-blue-300">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            Read Biography
           </button>
-          <div
-            v-if="showBiography"
-            class="fixed top-0 left-0 right-0 bottom-0 z-50 transition-opacity duration-800"
-            :class="{ 'opacity-100': showBiography, 'opacity-0': !showBiography }"
-          >
-            <BiographyElement :bio="props.bio || ''" :showBiography="showBiography" @close="closeBiography" />
-          </div>
+          <BiographyElement
+            :bio="props.bio || ''"
+            :showBiography="showBiography"
+            @close="closeBiography"
+          />
 
           <div class="mt-5 flex items-center justify-center gap-4">
             <a
@@ -124,7 +127,7 @@
 import type { Profile } from "~/types/profile.types";
 import BiographyElement from "./BiographyElement.vue";
 
-const props = defineProps<Partial<Profile>>();
+const props = defineProps<Partial<Profile> & { pending?: boolean }>();
 const showBiography = ref(false);
 
 const closeBiography = () => {

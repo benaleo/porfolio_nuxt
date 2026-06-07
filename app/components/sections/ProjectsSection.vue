@@ -17,7 +17,17 @@
       </div>
 
       <ClientOnly>
-        <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-if="pending" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div v-for="i in 3" :key="i" class="rounded-xl overflow-hidden border border-slate-700">
+            <Skeleton class="aspect-[16/9] w-full rounded-none" />
+            <div class="p-4 space-y-3">
+              <Skeleton class="h-4 w-3/4" />
+              <Skeleton class="h-3 w-full" />
+              <Skeleton class="h-3 w-5/6" />
+            </div>
+          </div>
+        </div>
+        <div v-else class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <div class="rounded-xl card-blue-neon" :style="{ padding: '0' }" v-for="p in displayed" :key="p.id" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }">
             <ProjectCard :project="p" />
           </div>
@@ -47,13 +57,15 @@ type Project = {
   category: 'Backend' | 'Frontend' | 'Fullstack' | 'Other' | string
   image?: string | null
   tags?: string[]
+  highlight?: boolean
 }
 
 const selected = ref<'All' | string>('All')
 
 type ProjectsResponse = { items: Project[]; total: number; take: number; skip: number }
-const { data: projects } = await useAsyncData('projects-list', () =>
-  $fetch<ProjectsResponse>('/api/projects')
+const { data: projects, pending } = useAsyncData('projects-list', () =>
+  $fetch<ProjectsResponse>('/api/projects'),
+  { server: false, lazy: true, getCachedData: () => undefined },
 )
 
 const categories = computed(() =>
@@ -62,7 +74,8 @@ const categories = computed(() =>
 
 const filtered = computed(() => {
   const list = projects.value?.items || []
-  return selected.value === 'All' ? list : list.filter((p) => p.category === selected.value)
+  const scoped = selected.value === 'All' ? [...list] : list.filter((p) => p.category === selected.value)
+  return scoped.sort((a, b) => Number(b.highlight ?? false) - Number(a.highlight ?? false))
 })
 
 // Responsive Load More logic
@@ -105,6 +118,16 @@ onMounted(() => {
   // @ts-ignore
   mq.addListener && mq.addListener(apply)
 })
+
+// Initialize visibleCount once data arrives from the lazy fetch
+watch(
+  () => filtered.value.length,
+  (len) => {
+    if (visibleCount.value === 0 && len > 0) {
+      visibleCount.value = Math.min(baseChunk(), len)
+    }
+  },
+)
 
 onBeforeUnmount(() => {
   const mq = window.matchMedia('(min-width: 1024px)')

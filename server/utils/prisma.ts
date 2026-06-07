@@ -1,12 +1,7 @@
-import pkg from '@prisma/client/edge'
-const { PrismaClient } = pkg as any
-import { withAccelerate } from '@prisma/extension-accelerate'
+import { PrismaClient } from '@prisma/client'
 
-// Use Edge client with Accelerate so it runs on Cloudflare Workers.
-// In Node/dev it also works, though without Node pooling.
-// PRISMA_ACCELERATE_URL must be set in production.
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL,
-})
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
 
-export const db = prisma.$extends(withAccelerate())
+export const db = globalForPrisma.prisma ?? new PrismaClient()
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db

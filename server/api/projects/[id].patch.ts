@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   await requireAuth(event)
   const id = Number(getRouterParam(event, 'id'))
   if (!id) throw createError({ statusCode: 400, message: 'invalid id' })
-  const body = await readBody<{ title?: string; description?: string; category?: 'Backend' | 'Frontend' | 'Fullstack' | 'Other'; image?: string | null; tags?: string[] }>(event)
+  const body = await readBody<{ title?: string; description?: string; category?: 'Backend' | 'Frontend' | 'Fullstack' | 'Other'; image?: string | null; tags?: string[]; highlight?: boolean }>(event)
   try {
     const existing = await db.project.findUnique({ where: { id } })
     if (!existing) throw createError({ statusCode: 404, message: 'Not found' })

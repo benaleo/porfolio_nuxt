@@ -14,15 +14,16 @@ export default defineNuxtConfig({
       },
     },
     // Security headers for all routes
-    '/*': {
+    "/*": {
       headers: {
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'X-XSS-Protection': '1; mode=block',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-        'Content-Security-Policy': "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:;"
-      }
-    }
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Content-Security-Policy":
+          "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:;",
+      },
+    },
   },
 
   app: {
@@ -47,11 +48,11 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Server-only config (not exposed to client)
-    secret: process.env.APP_SECRET || 'default-secret-key',
+    secret: process.env.APP_SECRET || "default-secret-key",
     auth: {
       adminUsername: process.env.ADMIN_USERNAME,
       adminPassword: process.env.ADMIN_PASSWORD,
-      jwtSecret: process.env.JWT_SECRET || 'default-jwt-secret',
+      jwtSecret: process.env.JWT_SECRET || "default-jwt-secret",
     },
     contact: {
       formspreeEndpoint: process.env.FORMSPREE_ENDPOINT || "",
@@ -60,7 +61,7 @@ export default defineNuxtConfig({
     public: {
       siteName: "Beno – Fullstack Developer",
       siteDescription: "Fullstack Developer | Spring Boot • Golang • Vue/Nuxt",
-      siteUrl: process.env.SITE_URL || "https://benaleo-dev.cloud/",
+      siteUrl: process.env.SITE_URL || "https://beno-dev.vercel.app/",
       social: {
         github: "https://github.com/your-github",
         linkedin: "https://www.linkedin.com/in/your-linkedin",
@@ -69,7 +70,6 @@ export default defineNuxtConfig({
       // No sensitive data here
     },
   },
-  
 
   vite: {
     plugins: [tailwindcss()],

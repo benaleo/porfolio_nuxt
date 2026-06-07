@@ -50,7 +50,51 @@
           </div>
           <div class="sm:col-span-2">
             <label class="block text-sm mb-1">Bio</label>
-            <textarea v-model="form.bio" rows="4" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200"></textarea>
+            <div v-if="isMounted" class="rounded border border-slate-300 dark:border-slate-700 overflow-hidden">
+              <!-- Toggle bar -->
+              <div class="flex justify-end px-2 py-1 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                <button
+                  type="button"
+                  title="Toggle HTML source"
+                  :class="['text-xs px-2 py-0.5 rounded font-mono transition', bioHtmlMode ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300']"
+                  @click="bioHtmlMode = !bioHtmlMode"
+                >&lt;/&gt;</button>
+              </div>
+              <!-- Rich text editor -->
+              <div v-show="!bioHtmlMode">
+                <QuillEditor
+                  v-model:content="form.bio"
+                  content-type="html"
+                  theme="snow"
+                  toolbar="#bio-toolbar"
+                >
+                  <template #toolbar>
+                    <div id="bio-toolbar">
+                      <span class="ql-formats">
+                        <button class="ql-bold" /><button class="ql-italic" /><button class="ql-underline" />
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-list" value="ordered" /><button class="ql-list" value="bullet" />
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-link" />
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-clean" />
+                      </span>
+                    </div>
+                  </template>
+                </QuillEditor>
+              </div>
+              <!-- HTML source textarea -->
+              <textarea
+                v-show="bioHtmlMode"
+                v-model="form.bio"
+                rows="8"
+                class="w-full px-3 py-2 font-mono text-sm bg-white dark:bg-slate-900 outline-none resize-y"
+              />
+            </div>
+            <textarea v-else v-model="form.bio" rows="4" class="w-full rounded border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 outline-none focus:ring focus:ring-blue-200" />
           </div>
         </div>
 
@@ -83,14 +127,23 @@
 </template>
 
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
 import admin from '../../../middleware/admin'
 
+const QuillEditor = defineAsyncComponent(() =>
+  import('@vueup/vue-quill').then((m) => m.QuillEditor)
+)
+
 definePageMeta({ layout: 'console', middleware: [admin] })
+
+const bioHtmlMode = ref(false)
+const isMounted = ref(false)
+onMounted(() => { isMounted.value = true })
 
 type Profile = {
   name: string
   avatar: string | null
-  bio: string | null
+  bio: string
   tagline: string | null
   contactNumber: string | null
   github: string | null
@@ -101,21 +154,25 @@ type Profile = {
   impactOss: number
 }
 
-const { data: initial } = await useAsyncData('profile', () => $fetch<Profile | null>('/api/profile', { credentials: 'include' }))
+const { data: initial } = useAsyncData('profile', () => $fetch<Profile | null>('/api/profile', { credentials: 'include' }), { server: false, lazy: true, getCachedData: () => undefined })
 
 const form = reactive<Profile>({
-  name: initial.value?.name || '',
-  avatar: initial.value?.avatar || null,
-  bio: initial.value?.bio || null,
-  tagline: initial.value?.tagline || null,
-  contactNumber: initial.value?.contactNumber || null,
-  github: initial.value?.github || null,
-  linkedin: initial.value?.linkedin || null,
-  email: initial.value?.email || null,
-  impactYears: initial.value?.impactYears || 0,
-  impactProjects: initial.value?.impactProjects || 0,
-  impactOss: initial.value?.impactOss || 0,
+  name: '',
+  avatar: null,
+  bio: '',
+  tagline: null,
+  contactNumber: null,
+  github: null,
+  linkedin: null,
+  email: null,
+  impactYears: 0,
+  impactProjects: 0,
+  impactOss: 0,
 })
+
+watch(initial, (val) => {
+  if (val) Object.assign(form, val)
+}, { immediate: true })
 
 const saving = ref(false)
 const saved = ref(false)

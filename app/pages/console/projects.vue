@@ -87,6 +87,10 @@
               placeholder="e.g. vue, nuxt, golang"
             />
           </div>
+          <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input v-model="form.highlight" type="checkbox" class="size-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+            <span class="text-sm">Highlight this project</span>
+          </label>
           <div class="flex items-center gap-2 pt-2">
             <button
               :disabled="saving"
@@ -120,46 +124,71 @@
               <th class="px-4 py-2">Title</th>
               <th class="px-4 py-2">Category</th>
               <th class="px-4 py-2">Tags</th>
+              <th class="px-4 py-2">Highlighted</th>
               <th class="px-4 py-2">Created</th>
               <th class="px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="p in items"
-              :key="p.id"
-              class="border-b border-slate-200/70 dark:border-slate-800"
-            >
-              <td class="px-4 py-2 font-medium">{{ p.title }}</td>
-              <td class="px-4 py-2 text-slate-500">{{ p.category }}</td>
-              <td class="px-4 py-2 text-slate-500">
-                {{ (p.tags || []).join(", ") }}
-              </td>
-              <td class="px-4 py-2 text-slate-500">
-                {{ format(p.createdAt) }}
-              </td>
-              <td class="px-4 py-2">
-                <div class="flex items-center gap-2">
-                  <button
-                    class="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
-                    @click="startEdit(p)"
+            <template v-if="pending">
+              <tr v-for="i in pageSize" :key="i" class="border-b border-slate-200/70 dark:border-slate-800">
+                <td class="px-4 py-2"><Skeleton class="h-3 w-3/4" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-20" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-32" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-16" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-24" /></td>
+                <td class="px-4 py-2"><Skeleton class="h-3 w-20" /></td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr
+                v-for="p in items"
+                :key="p.id"
+                class="border-b border-slate-200/70 dark:border-slate-800"
+              >
+                <td class="px-4 py-2 font-medium">{{ p.title }}</td>
+                <td class="px-4 py-2 text-slate-500">{{ p.category }}</td>
+                <td class="px-4 py-2 text-slate-500">
+                  {{ (p.tags || []).join(", ") }}
+                </td>
+                <td class="px-4 py-2">
+                  <span
+                    v-if="p.highlight"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-xs font-semibold text-slate-900"
                   >
-                    Edit
-                  </button>
-                  <button
-                    class="px-2 py-1 rounded border border-red-300 text-red-700 hover:bg-red-50"
-                    @click="onDelete(p)"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="(items || []).length === 0">
-              <td colspan="5" class="px-4 py-6 text-center text-slate-500">
-                No projects yet
-              </td>
-            </tr>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-3">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"/>
+                    </svg>
+                    Yes
+                  </span>
+                  <span v-else class="text-slate-400 text-xs">—</span>
+                </td>
+                <td class="px-4 py-2 text-slate-500">
+                  {{ format(p.createdAt) }}
+                </td>
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2">
+                    <button
+                      class="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      @click="startEdit(p)"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      class="px-2 py-1 rounded border border-red-300 text-red-700 hover:bg-red-50"
+                      @click="onDelete(p)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="(items || []).length === 0">
+                <td colspan="6" class="px-4 py-6 text-center text-slate-500">
+                  No projects yet
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
         <!-- Pagination -->
@@ -198,8 +227,12 @@
 </template>
 
 <script setup lang="ts">
+import { defineAsyncComponent } from "vue";
 import admin from "../../../middleware/admin";
-import { QuillEditor } from "@vueup/vue-quill";
+
+const QuillEditor = defineAsyncComponent(() =>
+  import("@vueup/vue-quill").then((m) => m.QuillEditor)
+);
 
 definePageMeta({ layout: "console", middleware: [admin] });
 
@@ -210,6 +243,7 @@ type Project = {
   category: "Backend" | "Frontend" | "Fullstack" | "Other";
   image?: string | null;
   tags?: string[];
+  highlight?: boolean;
   createdAt: string;
 };
 
@@ -229,13 +263,14 @@ const {
   data,
   refresh,
   error: fetchError,
-} = await useAsyncData(
+  pending,
+} = useAsyncData(
   () => `project-list-${page.value}-${pageSize.value}`,
   () =>
     $fetch<ProjectApi>("/api/projects", {
       params: { take: pageSize.value, skip: (page.value - 1) * pageSize.value },
     }),
-  { watch: [page, pageSize] }
+  { watch: [page, pageSize], server: false, lazy: true, getCachedData: () => undefined }
 );
 
 const items = computed(() => data.value?.items || []);
@@ -265,7 +300,8 @@ const form = reactive<{
   category: Project["category"];
   image?: string | null;
   tags?: string[];
-}>({ title: "", description: "", category: "Backend", image: null, tags: [] });
+  highlight: boolean;
+}>({ title: "", description: "", category: "Backend", image: null, tags: [], highlight: false });
 const tagsInput = ref("");
 
 const startCreate = () => {
@@ -277,6 +313,7 @@ const startCreate = () => {
     category: "Backend",
     image: null,
     tags: [],
+    highlight: false,
   });
   tagsInput.value = "";
 };
@@ -290,6 +327,7 @@ const startEdit = (p: Project) => {
     category: p.category,
     image: p.image || null,
     tags: p.tags || [],
+    highlight: (p as any).highlight ?? false,
   });
   tagsInput.value = (p.tags || []).join(", ");
 };

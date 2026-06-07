@@ -6,8 +6,16 @@
       </div>
 
       <ClientOnly>
+        <div v-if="pending" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div v-for="i in 3" :key="i" class="card-blue-neon space-y-3">
+            <Skeleton class="h-3 w-24" />
+            <Skeleton class="h-5 w-3/4" />
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6" />
+          </div>
+        </div>
         <div
-          v-if="postItems.length > 0"
+          v-else-if="postItems.length > 0"
           class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           <NuxtLink
@@ -44,8 +52,9 @@ type Post = {
   createdAt: string;
 };
 type BlogResponse = { items: Post[]; total: number; take: number; skip: number };
-const { data: posts } = await useAsyncData("blog-list", () =>
-  $fetch<BlogResponse>("/api/blog")
+const { data: posts, pending } = useAsyncData("blog-list", () =>
+  $fetch<BlogResponse>("/api/blog"),
+  { server: false, lazy: true, getCachedData: () => undefined },
 );
 const postItems = computed(() => posts.value?.items || []);
 const format = (s?: string | null) =>
