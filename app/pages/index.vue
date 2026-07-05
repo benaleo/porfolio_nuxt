@@ -1,34 +1,81 @@
 <template>
   <div>
     <LockScreen v-if="!isUnlocked" @unlocked="handleUnlock" />
-    <div v-else>
-    <section id="intro">
-      <IntroSection
-        :name="profile?.name"
-        :avatar="profile?.avatar"
-        :tagline="profile?.tagline"
-        :bio="profile?.bio"
-        :contactNumber="profile?.contactNumber"
-        :github="profile?.github"
-        :linkedin="profile?.linkedin"
-        :email="profile?.email"
-      />
-    </section>
-    <section id="projects"><ProjectsSection /></section>
-    <section id="education"><EducationSection /></section>
-    <section id="experience"><ExperienceSection /></section>
-    <section id="counters">
-      <CountersSection
-        :years="profile?.impactYears"
-        :projects="profile?.impactProjects"
-        :oss="profile?.impactOss"
-      />
-    </section>
-    <section id="blog"><BlogSection /></section>
-    <section id="contact">
-      <ContactSection :email="profile?.email" :phone="profile?.contactNumber" />
-    </section>
-    </div>
+    <template v-else>
+      <PageReveal @done="revealDone = true" />
+
+      <div v-if="revealDone">
+        <section id="intro">
+          <IntroSection
+            :name="profile?.name"
+            :avatar="profile?.avatar"
+            :tagline="profile?.tagline"
+            :bio="profile?.bio"
+            :contactNumber="profile?.contactNumber"
+            :github="profile?.github"
+            :linkedin="profile?.linkedin"
+            :email="profile?.email"
+            :pending="profilePending"
+          />
+        </section>
+
+        <div
+          v-motion
+          :initial="{ opacity: 0, y: 64 }"
+          :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 700, ease: 'easeOut' } }"
+        >
+          <section id="projects"><ProjectsSection /></section>
+        </div>
+
+        <div
+          v-motion
+          :initial="{ opacity: 0, y: 64 }"
+          :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 700, ease: 'easeOut' } }"
+        >
+          <section id="education"><EducationSection /></section>
+        </div>
+
+        <div
+          v-motion
+          :initial="{ opacity: 0, y: 64 }"
+          :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 700, ease: 'easeOut' } }"
+        >
+          <section id="experience"><ExperienceSection /></section>
+        </div>
+
+        <div
+          v-motion
+          :initial="{ opacity: 0, y: 64 }"
+          :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 700, ease: 'easeOut' } }"
+        >
+          <section id="counters">
+            <CountersSection
+              :years="profile?.impactYears"
+              :projects="profile?.impactProjects"
+              :oss="profile?.impactOss"
+            />
+          </section>
+        </div>
+
+        <div
+          v-motion
+          :initial="{ opacity: 0, y: 64 }"
+          :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 700, ease: 'easeOut' } }"
+        >
+          <section id="blog"><BlogSection /></section>
+        </div>
+
+        <div
+          v-motion
+          :initial="{ opacity: 0, y: 64 }"
+          :visibleOnce="{ opacity: 1, y: 0, transition: { duration: 700, ease: 'easeOut' } }"
+        >
+          <section id="contact">
+            <ContactSection :email="profile?.email" :phone="profile?.contactNumber" />
+          </section>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -44,16 +91,37 @@ import type { Profile } from "~/types/profile.types";
 import { useLogTrafic } from "~/composables/useLogTrafic";
 import LockScreen from "~/components/LockScreen.vue";
 
-const { data: profile } = await useAsyncData("profile", () =>
-  $fetch<Profile | null>("/api/profile")
+const { data: profile, pending: profilePending } = useAsyncData("profile", () =>
+  $fetch<Profile | null>("/api/profile"),
+  { server: false, lazy: true, getCachedData: () => undefined },
 );
 
 const isUnlocked = ref(false);
+const revealDone = ref(false);
+const route = useRoute();
 
-onMounted(() => {
-  // Check if already unlocked in this session
+onMounted(async () => {
   const sessionUnlocked = sessionStorage.getItem('appUnlocked');
-  isUnlocked.value = sessionUnlocked === 'true';
+  if (sessionUnlocked === 'true') {
+    isUnlocked.value = true;
+    return;
+  }
+
+  const unlockParam = route.query.unlock as string | undefined;
+  if (unlockParam) {
+    try {
+      const res = await $fetch<{ valid: boolean }>('/api/unlock', {
+        method: 'POST',
+        body: { token: unlockParam },
+      });
+      if (res.valid) {
+        isUnlocked.value = true;
+        sessionStorage.setItem('appUnlocked', 'true');
+      }
+    } catch {
+      // invalid token — fall through to lock screen
+    }
+  }
 });
 
 const handleUnlock = () => {
@@ -61,7 +129,6 @@ const handleUnlock = () => {
   sessionStorage.setItem('appUnlocked', 'true');
 };
 
-// Log traffic on client mount
 if (process.client) {
   useLogTrafic();
 }

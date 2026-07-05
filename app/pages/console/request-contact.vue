@@ -22,18 +22,29 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, i) in filtered" :key="row.id" class="border-t border-slate-200 dark:border-slate-800">
-            <td class="px-4 py-3">{{ (page - 1) * pageSize + i + 1 }}</td>
-            <td class="px-4 py-3 font-medium">{{ row.name }}</td>
-            <td class="px-4 py-3">
-              <a :href="`mailto:${row.email}`" class="text-blue-600 hover:underline">{{ row.email }}</a>
-            </td>
-            <td class="px-4 py-3 whitespace-pre-wrap">{{ row.message }}</td>
-            <td class="px-4 py-3">{{ format(row.createdAt) }}</td>
-          </tr>
-          <tr v-if="!filtered.length">
-            <td class="px-4 py-8 text-center text-slate-500" colspan="5">No data</td>
-          </tr>
+          <template v-if="pending">
+            <tr v-for="i in pageSize" :key="i" class="border-t border-slate-200 dark:border-slate-800">
+              <td class="px-4 py-3"><Skeleton class="h-3 w-4" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-24" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-32" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-full" /></td>
+              <td class="px-4 py-3"><Skeleton class="h-3 w-28" /></td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr v-for="(row, i) in filtered" :key="row.id" class="border-t border-slate-200 dark:border-slate-800">
+              <td class="px-4 py-3">{{ (page - 1) * pageSize + i + 1 }}</td>
+              <td class="px-4 py-3 font-medium">{{ row.name }}</td>
+              <td class="px-4 py-3">
+                <a :href="`mailto:${row.email}`" class="text-blue-600 hover:underline">{{ row.email }}</a>
+              </td>
+              <td class="px-4 py-3 whitespace-pre-wrap">{{ row.message }}</td>
+              <td class="px-4 py-3">{{ format(row.createdAt) }}</td>
+            </tr>
+            <tr v-if="!filtered.length">
+              <td class="px-4 py-8 text-center text-slate-500" colspan="5">No data</td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -64,10 +75,10 @@ const q = ref('')
 const page = ref(1)
 const pageSize = ref(10)
 
-const { data, refresh, error } = await useAsyncData(
+const { data, refresh, error, pending } = useAsyncData(
   () => `console-requests-${page.value}-${pageSize.value}`,
   () => $fetch<RequestsApi>('/api/requests', { params: { take: pageSize.value, skip: (page.value - 1) * pageSize.value } }),
-  { watch: [page, pageSize] }
+  { watch: [page, pageSize], server: false, lazy: true, getCachedData: () => undefined }
 )
 
 const items = computed(() => data.value?.items || [])
