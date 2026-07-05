@@ -4,6 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
+  nitro: {
+    preset: "cloudflare_module",
+  },
   css: ["~/assets/css/main.css", "@vueup/vue-quill/dist/vue-quill.snow.css"],
 
   routeRules: {
