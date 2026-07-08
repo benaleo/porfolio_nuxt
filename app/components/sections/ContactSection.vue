@@ -1,5 +1,5 @@
 <template>
-  <section class="py-20" id="contact">
+  <div class="py-20">
     <div class="mx-auto max-w-3xl px-4">
       <h2 class="text-2xl text-white sm:text-3xl font-bold text-center">Contact</h2>
 
@@ -40,7 +40,7 @@
         </a>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">

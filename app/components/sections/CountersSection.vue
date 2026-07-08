@@ -1,5 +1,5 @@
 <template>
-  <section class="py-20" id="counters">
+  <div class="py-20">
     <div class="mx-auto max-w-6xl px-4">
       <h2 class="text-2xl sm:text-3xl text-white font-bold text-center">Impact</h2>
       <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-6">
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">

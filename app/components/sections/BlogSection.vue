@@ -1,5 +1,5 @@
 <template>
-  <section class="py-20" id="blog">
+  <div class="py-20">
     <div class="mx-auto max-w-6xl px-4">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl text-white sm:text-3xl font-bold">Blog</h2>
@@ -38,7 +38,7 @@
         <p v-else class="mt-6 text-slate-500">No posts yet.</p>
       </ClientOnly>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">

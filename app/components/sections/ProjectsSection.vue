@@ -1,5 +1,5 @@
 <template>
-  <section class="py-20 text-slate-100">
+  <div class="py-20 text-slate-100">
     <div class="mx-auto max-w-6xl px-4">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <h2 class="text-2xl sm:text-3xl font-bold">Projects</h2>
@@ -45,7 +45,7 @@
         </div>
       </ClientOnly>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
