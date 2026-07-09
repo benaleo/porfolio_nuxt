@@ -6,9 +6,6 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   nitro: {
     // Preset auto-detected on Vercel at build time (node-server locally).
-    // Server code uses top-level await (server/utils/prisma.ts); es2022 target
-    // enables it on Node 22.
-    esbuild: { options: { target: "es2022" } },
   },
   css: ["~/assets/css/main.css", "@vueup/vue-quill/dist/vue-quill.snow.css"],
 
