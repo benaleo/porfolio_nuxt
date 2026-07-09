@@ -4,6 +4,12 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
+  nitro: {
+    preset: "cloudflare_module",
+    // Server code uses top-level await (server/utils/prisma.ts); both Node 22
+    // (dev) and workerd support es2022.
+    esbuild: { options: { target: "es2022" } },
+  },
   css: ["~/assets/css/main.css", "@vueup/vue-quill/dist/vue-quill.snow.css"],
 
   routeRules: {

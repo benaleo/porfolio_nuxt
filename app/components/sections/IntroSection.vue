@@ -1,5 +1,5 @@
 <template>
-  <section class="relative py-36 sm:py-20">
+  <div class="relative py-36 sm:py-20">
     <div class="mx-auto max-w-5xl px-4">
       <ClientOnly>
         <div class="text-center">
@@ -127,7 +127,7 @@
         </div>
       </ClientOnly>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">

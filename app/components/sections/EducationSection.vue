@@ -1,5 +1,5 @@
 <template>
-  <section v-if="pending || education.length > 0" class="py-20">
+  <div v-if="pending || education.length > 0" class="py-20">
     <div class="mx-auto max-w-5xl px-4">
       <h2 class="text-2xl sm:text-3xl text-white font-bold">Study</h2>
       <div class="mt-8 relative">
@@ -24,7 +24,7 @@
         </ClientOnly>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">

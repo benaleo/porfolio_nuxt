@@ -1,7 +1,7 @@
 <template>
   <ClientOnly>
     <Teleport to="body">
-      <Transition name="blast" @after-leave="emit('done')">
+      <Transition name="blast">
         <div v-if="active" class="pr">
           <!-- Expanding nebula rings -->
           <div class="pr-ring pr-r1" />
@@ -72,6 +72,10 @@ onMounted(() => {
   setTimeout(() => { brandVisible.value = true }, 250)
   setTimeout(() => { launching.value = true }, 850)
   setTimeout(() => { active.value = false }, 1550)
+  // `done` is emitted on a timer, NOT from the Transition's after-leave:
+  // Vue transitions stall on requestAnimationFrame in hidden tabs, which
+  // would otherwise leave the page stuck on the reveal forever.
+  setTimeout(() => emit('done'), 2200)
 })
 </script>
 
