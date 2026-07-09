@@ -1,26 +1,11 @@
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
+import { PrismaClient } from '@prisma/client'
 
-const globalForPrisma = globalThis as unknown as { prisma?: any }
+// Vercel runs on Node serverless, so we connect to Postgres (Neon) directly.
+// Use the pooled connection string for DATABASE_URL (serverless-safe) and the
+// direct one for DIRECT_DATABASE_URL (migrations). A global singleton avoids
+// exhausting connections across hot-reloads in dev.
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
 
-// The edge client only accepts Accelerate URLs (prisma:// or prisma+postgres://).
-// In local dev with a direct postgresql:// URL, use the standard Node client
-// instead. The `import.meta.dev` guard is statically false in production
-// builds, so the standard client (and its wasm loader, which breaks the
-// Cloudflare Workers bundle) is dead-code-eliminated there.
-async function createClient() {
-  const url = process.env.DATABASE_URL ?? ''
-  if (import.meta.dev && !url.startsWith('prisma')) {
-    const { PrismaClient: NodeClient } = await import('@prisma/client')
-    return new NodeClient() as unknown as ReturnType<typeof createEdgeClient>
-  }
-  return createEdgeClient()
-}
-
-function createEdgeClient() {
-  return new PrismaClient().$extends(withAccelerate())
-}
-
-export const db = globalForPrisma.prisma ?? (await createClient())
+export const db = globalForPrisma.prisma ?? new PrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
