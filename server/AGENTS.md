@@ -14,4 +14,4 @@ Nuxt H3 server (Nitro). File-based API routes plus shared server-only utilities.
 ## For AI Agents
 
 - Never instantiate `PrismaClient`, a JWT signer, or an S3 client outside `utils/` — always import the shared instance.
-- `runtimeConfig` (server-only secrets) is read via `useRuntimeConfig()`, never `process.env`, so behavior stays consistent under Cloudflare Workers/NuxtHub.
+- `runtimeConfig` (server-only secrets) is read via `useRuntimeConfig()`, never `process.env`, so behavior stays consistent across environments.
