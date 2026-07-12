@@ -9,7 +9,7 @@
         class="orbit-ring"
         :style="{
           width: `calc(${orbit.radius} * 2)`,
-          height: `calc(${orbit.radius} * 2 * ${ORBIT_ELLIPSE})`,
+          height: `calc(${orbit.radius} * 2)`,
         }"
         aria-hidden="true"
       />
@@ -111,9 +111,6 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: 'select', id: string): void }>()
 
 const { visible } = useNavVisibility()
-
-/** Vertical squash factor for the elliptical orbit path rings. */
-const ORBIT_ELLIPSE = 0.62
 
 // Icons are inline white SVG strings (rendered via v-html into .planet-icon).
 const ICONS = {
@@ -221,14 +218,36 @@ const onSelect = (id: string) => emit('select', id)
 }
 
 /* ── Orbit path rings ─────────────────────────────────────────────────────── */
+/* Circular (matching the planets' actual rotate+translateX paths), drawn as a
+   thin colorful conic-gradient line via a radial mask, slightly transparent,
+   spinning clockwise with the same period as the planets. */
 .orbit-ring {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 50%;
   pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    rgba(52, 211, 153, 0.85),
+    rgba(56, 189, 248, 0.85),
+    rgba(167, 139, 250, 0.85),
+    rgba(251, 146, 60, 0.85),
+    rgba(248, 113, 113, 0.85),
+    rgba(251, 191, 36, 0.85),
+    rgba(52, 211, 153, 0.85)
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 0.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 0.5px));
+  opacity: 0.35;
+  /* same 96s clockwise period as the planets so the color sweep follows them */
+  animation: ring-spin 96s linear infinite;
+}
+
+@keyframes ring-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* ── Planet orbit (the arm) ───────────────────────────────────────────────── */
@@ -415,6 +434,7 @@ const onSelect = (id: string) => emit('select', id)
 @media (prefers-reduced-motion: reduce) {
   .planet-orbit,
   .planet-spin,
+  .orbit-ring,
   .sun-ring,
   .sun-ring-2 {
     animation: none !important;
