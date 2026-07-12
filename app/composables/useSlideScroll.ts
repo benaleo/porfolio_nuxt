@@ -134,7 +134,14 @@ export const useSlideScroll = () => {
     if (root && section) root.scrollTo({ top: section.offsetTop, behavior: 'auto' })
   }
 
+  /** The hub is gesture-locked: leaving it requires clicking a planet/sun. */
+  const atHub = () => slideIds.value[activeIdx.value] === 'hub'
+
   const onWheel = (event: WheelEvent) => {
+    if (atHub()) {
+      event.preventDefault()
+      return
+    }
     const dir: 1 | -1 = event.deltaY > 0 ? 1 : -1
     // Let a still-scrollable inner area consume the wheel naturally.
     if (innerCanScroll(event.target, dir)) return
@@ -160,6 +167,7 @@ export const useSlideScroll = () => {
   }
 
   const onKeydown = (event: KeyboardEvent) => {
+    if (atHub()) return
     if (isEditableTarget(event.target)) return
     const key = event.key
     if (key === 'ArrowDown' || key === 'PageDown' || key === ' ' || key === 'Spacebar') {
@@ -176,6 +184,7 @@ export const useSlideScroll = () => {
   }
 
   const onTouchEnd = (event: TouchEvent) => {
+    if (atHub()) return
     const endY = event.changedTouches[0]?.clientY ?? 0
     const deltaY = touchStartY - endY // positive = swipe up = go next
     if (Math.abs(deltaY) < TOUCH_THRESHOLD) return

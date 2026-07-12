@@ -6,20 +6,17 @@
 
       <div v-if="revealDone" class="fixed inset-0">
         <SideDots />
-        <SlideNav />
 
-        <!-- Back-to-galaxy button (hidden on the hub itself) -->
+        <!-- Back-to-galaxy rocket (hidden on the hub itself) -->
         <button
           v-show="activeIdx > 0"
           type="button"
           aria-label="Back to galaxy"
-          class="fixed top-5 right-5 z-50 rounded-full border border-slate-700 bg-slate-900/60 backdrop-blur p-3 text-slate-200 hover:bg-white/10 transition"
+          class="back-rocket fixed bottom-4 left-4 z-50"
           @click="onBackToHub"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-            <circle cx="12" cy="12" r="3.5" />
-            <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(-25 12 12)" />
-          </svg>
+          <span class="flare" aria-hidden="true" />
+          <img src="/page_back.png" alt="" class="rocket-img" draggable="false" />
         </button>
 
         <FogTransition ref="fogRef" />
@@ -150,7 +147,6 @@ import CountersSection from "~/components/sections/CountersSection.vue";
 import BlogSection from "~/components/sections/BlogSection.vue";
 import ContactSection from "~/components/sections/ContactSection.vue";
 import SideDots from "~/components/SideDots.vue";
-import SlideNav from "~/components/SlideNav.vue";
 import GalaxyHub from "~/components/GalaxyHub.vue";
 import FogTransition from "~/components/FogTransition.vue";
 import type { Profile } from "~/types/profile.types";
@@ -269,6 +265,83 @@ if (process.client) {
 }
 .scroll-root::-webkit-scrollbar {
   display: none;
+}
+
+/* ── back-to-galaxy rocket ── */
+.back-rocket {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  line-height: 0;
+}
+
+.rocket-img {
+  width: 110px;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 0 10px rgba(255, 90, 40, 0.25));
+  transition: filter 0.25s ease;
+}
+
+@media (min-width: 768px) {
+  .rocket-img {
+    width: 150px;
+  }
+}
+
+/* hover: slight shake + brighter exhaust */
+.back-rocket:hover .rocket-img {
+  animation: rocket-shake 0.45s ease-in-out infinite;
+  filter: brightness(1.18) drop-shadow(0 0 16px rgba(255, 110, 40, 0.65))
+    drop-shadow(0 0 34px rgba(255, 60, 20, 0.35));
+}
+
+@keyframes rocket-shake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20%      { transform: translate(-1.5px, 1px) rotate(-1.2deg); }
+  40%      { transform: translate(2px, -1px) rotate(1.1deg); }
+  60%      { transform: translate(-2px, -1.5px) rotate(-0.8deg); }
+  80%      { transform: translate(1.5px, 1.5px) rotate(1.3deg); }
+}
+
+/* exhaust flare — the back rocket points left, flame exits on the right */
+.back-rocket .flare {
+  position: absolute;
+  top: 50%;
+  right: -18px;
+  width: 84px;
+  height: 84px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 130, 0.95) 0%,
+    rgba(255, 120, 40, 0.6) 35%,
+    rgba(255, 40, 20, 0.3) 60%,
+    transparent 78%
+  );
+  filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.back-rocket:hover .flare {
+  opacity: 1;
+  animation: flare-pulse 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes flare-pulse {
+  from { transform: translateY(-50%) scale(0.85); }
+  to   { transform: translateY(-50%) scale(1.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-rocket:hover .rocket-img,
+  .back-rocket:hover .flare {
+    animation: none;
+  }
 }
 /* Internal per-slide scroll for over-tall content; thin/hidden scrollbar. */
 .slide-inner {
