@@ -2,14 +2,15 @@
   <div class="galaxy-hub relative h-full w-full flex items-center justify-center overflow-hidden select-none">
     <!-- Orbit stage: sun + orbit rings + planets share this centered coordinate space -->
     <div class="orbit-stage absolute inset-0 flex items-center justify-center">
-      <!-- Faint elliptical orbit path rings (behind planets) -->
+      <!-- Soft nebula-band orbit paths (behind planets). 28px oversize keeps
+           the planets' circular path running through the middle of the band. -->
       <div
         v-for="(orbit, i) in orbits"
         :key="`ring-${i}`"
         class="orbit-ring"
         :style="{
-          width: `calc(${orbit.radius} * 2)`,
-          height: `calc(${orbit.radius} * 2)`,
+          width: `calc(${orbit.radius} * 2 + 28px)`,
+          height: `calc(${orbit.radius} * 2 + 28px)`,
         }"
         aria-hidden="true"
       />
@@ -218,9 +219,10 @@ const onSelect = (id: string) => emit('select', id)
 }
 
 /* ── Orbit path rings ─────────────────────────────────────────────────────── */
-/* Circular (matching the planets' actual rotate+translateX paths), drawn as a
-   thin colorful conic-gradient line via a radial mask, slightly transparent,
-   spinning clockwise with the same period as the planets. */
+/* Nebula-style bands hugging the planets' circular paths: a conic color sweep
+   masked into a soft feathered annulus (the planets' path runs through its
+   middle, 14px from the edge), blurred like interstellar dust, slightly
+   transparent, spinning clockwise with the same period as the planets. */
 .orbit-ring {
   position: absolute;
   left: 50%;
@@ -238,9 +240,24 @@ const onSelect = (id: string) => emit('select', id)
     rgba(251, 191, 36, 0.85),
     rgba(52, 211, 153, 0.85)
   );
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 0.5px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 0.5px));
-  opacity: 0.35;
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 32px),
+    rgba(0, 0, 0, 0.55) calc(100% - 22px),
+    #000 calc(100% - 14px),
+    rgba(0, 0, 0, 0.55) calc(100% - 6px),
+    transparent 100%
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 32px),
+    rgba(0, 0, 0, 0.55) calc(100% - 22px),
+    #000 calc(100% - 14px),
+    rgba(0, 0, 0, 0.55) calc(100% - 6px),
+    transparent 100%
+  );
+  filter: blur(6px);
+  opacity: 0.3;
   /* same 96s clockwise period as the planets so the color sweep follows them */
   animation: ring-spin 96s linear infinite;
 }
