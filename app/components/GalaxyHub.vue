@@ -2,18 +2,43 @@
   <div class="galaxy-hub relative h-full w-full flex items-center justify-center overflow-hidden select-none">
     <!-- Orbit stage: sun + orbit rings + planets share this centered coordinate space -->
     <div class="orbit-stage absolute inset-0 flex items-center justify-center">
-      <!-- Soft nebula-band orbit paths (behind planets). 28px oversize keeps
-           the planets' circular path running through the middle of the band. -->
-      <div
-        v-for="(orbit, i) in orbits"
-        :key="`ring-${i}`"
-        class="orbit-ring"
-        :style="{
-          width: `calc(${orbit.radius} * 2 + 28px)`,
-          height: `calc(${orbit.radius} * 2 + 28px)`,
-        }"
-        aria-hidden="true"
-      />
+      <!-- Milky-Way spiral nebula behind the sun & planets: logarithmic arms
+           blurred into dust, warm bright core, spinning with the planets. -->
+      <div class="spiral-nebula" aria-hidden="true">
+        <svg class="spiral-svg" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="spiral-arm-a" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffd9c4" />
+              <stop offset="35%" stop-color="#f0abfc" />
+              <stop offset="70%" stop-color="#a78bfa" />
+              <stop offset="100%" stop-color="#38bdf8" />
+            </linearGradient>
+            <linearGradient id="spiral-arm-b" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fecdd3" />
+              <stop offset="40%" stop-color="#e879f9" />
+              <stop offset="75%" stop-color="#818cf8" />
+              <stop offset="100%" stop-color="#60a5fa" />
+            </linearGradient>
+            <radialGradient id="spiral-core">
+              <stop offset="0%" stop-color="rgba(255, 241, 224, 0.9)" />
+              <stop offset="30%" stop-color="rgba(251, 207, 232, 0.5)" />
+              <stop offset="65%" stop-color="rgba(167, 139, 250, 0.18)" />
+              <stop offset="100%" stop-color="rgba(167, 139, 250, 0)" />
+            </radialGradient>
+          </defs>
+          <circle cx="500" cy="500" r="230" fill="url(#spiral-core)" />
+          <path
+            v-for="(arm, i) in SPIRAL_ARMS"
+            :key="`arm-${i}`"
+            :d="arm.d"
+            fill="none"
+            :stroke="`url(#${arm.gradient})`"
+            :stroke-width="arm.width"
+            stroke-linecap="round"
+            :opacity="arm.opacity"
+          />
+        </svg>
+      </div>
 
       <!-- Planets -->
       <div
@@ -196,18 +221,27 @@ const activePlanets = computed(() => {
   }))
 })
 
-/** Distinct orbit radii present in the active set — one ring drawn per shell. */
-const orbits = computed(() => {
-  const seen = new Set<string>()
-  const list: { radius: string }[] = []
-  for (const p of activePlanets.value) {
-    if (!seen.has(p.radius)) {
-      seen.add(p.radius)
-      list.push({ radius: p.radius })
-    }
+/** Logarithmic spiral arm path (r = r0·e^{bθ}) in the 1000×1000 viewBox. */
+function spiralArm(startAngle: number, turns: number, r0: number, rMax: number, steps = 120): string {
+  const b = Math.log(rMax / r0) / (turns * 2 * Math.PI)
+  let d = ''
+  for (let i = 0; i <= steps; i++) {
+    const th = (i / steps) * turns * 2 * Math.PI
+    const r = r0 * Math.exp(b * th)
+    const a = startAngle + th
+    d += `${i === 0 ? 'M' : 'L'}${(500 + r * Math.cos(a)).toFixed(1)} ${(500 + r * Math.sin(a)).toFixed(1)}`
   }
-  return list
-})
+  return d
+}
+
+// Two major arms opposite each other (like the Milky Way's) plus two fainter
+// intermediate arms; widths/opacities taper the secondary pair back.
+const SPIRAL_ARMS = [
+  { d: spiralArm(0, 1.6, 46, 470), width: 86, gradient: 'spiral-arm-a', opacity: 0.75 },
+  { d: spiralArm(Math.PI, 1.6, 46, 470), width: 86, gradient: 'spiral-arm-b', opacity: 0.75 },
+  { d: spiralArm(Math.PI / 2, 1.55, 40, 430), width: 48, gradient: 'spiral-arm-b', opacity: 0.45 },
+  { d: spiralArm(-Math.PI / 2, 1.55, 40, 430), width: 48, gradient: 'spiral-arm-a', opacity: 0.45 },
+]
 
 const onSelect = (id: string) => emit('select', id)
 </script>
@@ -218,51 +252,30 @@ const onSelect = (id: string) => emit('select', id)
   transform: translateZ(0);
 }
 
-/* ── Orbit path rings ─────────────────────────────────────────────────────── */
-/* Nebula-style bands hugging the planets' circular paths: a conic color sweep
-   masked into a soft feathered annulus (the planets' path runs through its
-   middle, 14px from the edge), blurred like interstellar dust, slightly
-   transparent, spinning clockwise with the same period as the planets. */
-.orbit-ring {
+/* ── Spiral nebula ─────────────────────────────────────────────────────────── */
+/* Milky-Way style: blurred logarithmic arms + warm core, spinning clockwise
+   with the same 96s period as the planets. The blur lives on the inner SVG
+   (static) while the rotation animates the wrapper, so the blurred raster is
+   cached and the spin costs only a transform. */
+.spiral-nebula {
   position: absolute;
   left: 50%;
   top: 50%;
+  width: min(150vmin, 1250px);
+  height: min(150vmin, 1250px);
   transform: translate(-50%, -50%);
-  border-radius: 50%;
   pointer-events: none;
-  background: conic-gradient(
-    from 0deg,
-    rgba(52, 211, 153, 0.85),
-    rgba(56, 189, 248, 0.85),
-    rgba(167, 139, 250, 0.85),
-    rgba(251, 146, 60, 0.85),
-    rgba(248, 113, 113, 0.85),
-    rgba(251, 191, 36, 0.85),
-    rgba(52, 211, 153, 0.85)
-  );
-  -webkit-mask: radial-gradient(
-    farthest-side,
-    transparent calc(100% - 32px),
-    rgba(0, 0, 0, 0.55) calc(100% - 22px),
-    #000 calc(100% - 14px),
-    rgba(0, 0, 0, 0.55) calc(100% - 6px),
-    transparent 100%
-  );
-  mask: radial-gradient(
-    farthest-side,
-    transparent calc(100% - 32px),
-    rgba(0, 0, 0, 0.55) calc(100% - 22px),
-    #000 calc(100% - 14px),
-    rgba(0, 0, 0, 0.55) calc(100% - 6px),
-    transparent 100%
-  );
-  filter: blur(6px);
-  opacity: 0.3;
-  /* same 96s clockwise period as the planets so the color sweep follows them */
-  animation: ring-spin 96s linear infinite;
+  opacity: 0.5;
+  animation: spiral-spin 96s linear infinite;
 }
 
-@keyframes ring-spin {
+.spiral-svg {
+  width: 100%;
+  height: 100%;
+  filter: blur(14px);
+}
+
+@keyframes spiral-spin {
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
@@ -451,7 +464,7 @@ const onSelect = (id: string) => emit('select', id)
 @media (prefers-reduced-motion: reduce) {
   .planet-orbit,
   .planet-spin,
-  .orbit-ring,
+  .spiral-nebula,
   .sun-ring,
   .sun-ring-2 {
     animation: none !important;
